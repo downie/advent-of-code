@@ -60,7 +60,7 @@ func numberOfIncreases(in series: [Int], windowSize: Int) -> Int {
     return increases
 }
 assert(numberOfIncreases(in: demoInput, windowSize: 3) == 5)
-
+ 
 result = numberOfIncreases(in: input, windowSize: 3)
 print("Part 2: \(result)")
 
