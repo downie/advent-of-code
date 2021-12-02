@@ -3,8 +3,9 @@
 import Foundation
 
 struct Position: Equatable {
-    var horizontal: Int
-    var depth: Int
+    var horizontal = 0
+    var depth = 0
+    var aim = 0
 }
 
 enum Direction: String {
@@ -30,8 +31,8 @@ func parseInput(string: String) -> [Command] {
     }
 }
 
-func finalPosition(after commands: [Command]) -> Position {
-    var position =
+func partOneFinalPosition(after commands: [Command]) -> Position {
+    let position =
     commands.reduce(Position(horizontal: 0, depth: 0)) { partialResult, command in
         var horizontal = partialResult.horizontal
         var depth = partialResult.depth
@@ -60,7 +61,7 @@ forward 2
 var demoOutput = Position(horizontal: 15, depth: 10)
 
 var commands = parseInput(string: demoInput)
-let demoResult = finalPosition(after: commands)
+let demoResult = partOneFinalPosition(after: commands)
 assert(demoResult == demoOutput)
 
 // MARK: - Part 1
@@ -69,7 +70,10 @@ var inputData = try! Data(contentsOf: file)
 let inputString = String(data: inputData, encoding: .utf8)!
 
 commands = parseInput(string: inputString)
-let part1Result = finalPosition(after: commands)
+let part1Result = partOneFinalPosition(after: commands)
 
 print(part1Result.horizontal * part1Result.depth)
+
+// MARK: - Part 2 demo
+
 //: [Next](@next)
