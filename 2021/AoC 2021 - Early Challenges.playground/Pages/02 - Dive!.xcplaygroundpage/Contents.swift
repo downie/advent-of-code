@@ -60,8 +60,8 @@ forward 2
 """
 var demoOutput = Position(horizontal: 15, depth: 10)
 
-var commands = parseInput(string: demoInput)
-let demoResult = partOneFinalPosition(after: commands)
+let demoCommands = parseInput(string: demoInput)
+let demoResult = partOneFinalPosition(after: demoCommands)
 assert(demoResult == demoOutput)
 
 // MARK: - Part 1
@@ -69,11 +69,38 @@ let file = Bundle.main.url(forResource: "02", withExtension: "txt")!
 var inputData = try! Data(contentsOf: file)
 let inputString = String(data: inputData, encoding: .utf8)!
 
-commands = parseInput(string: inputString)
+let commands = parseInput(string: inputString)
 let part1Result = partOneFinalPosition(after: commands)
 
-print(part1Result.horizontal * part1Result.depth)
+print("Part 1: \(part1Result.horizontal * part1Result.depth)")
 
-// MARK: - Part 2 demo
+// MARK: - Part 2
+
+func partTwoFinalPosition(after commands: [Command]) -> Position {
+    let position =
+    commands.reduce(Position(horizontal: 0, depth: 0)) { partialResult, command in
+        var horizontal = partialResult.horizontal
+        var depth = partialResult.depth
+        var aim = partialResult.aim
+        switch command.direction {
+        case .forward:
+            horizontal += command.distance
+            depth += aim * command.distance
+        case .down:
+            aim += command.distance
+        case .up:
+            aim -= command.distance
+        }
+        return Position(horizontal: horizontal, depth: depth, aim: aim)
+    }
+    return position
+}
+
+let partTwoDemoResult = partTwoFinalPosition(after: demoCommands)
+assert(partTwoDemoResult.horizontal == 15)
+assert(partTwoDemoResult.depth == 60)
+
+let partTwoResult = partTwoFinalPosition(after: commands)
+print("Part 2: \(partTwoResult.horizontal * partTwoResult.depth)")
 
 //: [Next](@next)
