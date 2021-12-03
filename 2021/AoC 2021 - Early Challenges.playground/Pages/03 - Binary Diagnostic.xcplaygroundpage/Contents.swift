@@ -35,22 +35,25 @@ func parseInput(from string: String) -> ([Int], Int) {
 let demoResult = parseInput(from: demoInputString)
 assert(demoResult.1 == 5)
 
+// `position` is a 0-based count from the least significant digit.
+func isMostCommonBitOne(in numbers: [Int], at position: Int) -> Bool {
+    let mask = 0x01 << position
+    let onesFound = numbers
+        .map { $0 & mask }
+        .map { $0 >> position }
+        .reduce(0, +)
+    return onesFound >= numbers.count / 2
+}
+
 // MARK: - Part 1
 func powerConsumption(for string: String) -> Int {
     var gamma = 0
     var epsilon = 0
     
     let (numbers, size) = parseInput(from: string)
-    let count = numbers.count
     
     for shift in 0..<size {
-        let mask = 0x01 << shift
-        let onesFound = numbers
-            .map { $0 & mask }
-            .map { $0 >> shift }
-            .reduce(0, +)
-        
-        if onesFound > count / 2 {
+        if isMostCommonBitOne(in: numbers, at: shift) {
             gamma = gamma | (0x01 << shift)
         } else {
             epsilon = epsilon | (0x01 << shift)
@@ -63,4 +66,6 @@ func powerConsumption(for string: String) -> Int {
 assert(powerConsumption(for: demoInputString) == 198)
 
 print("Part 1: \(powerConsumption(for: inputString))")
+
+
 //: [Next](@next)
