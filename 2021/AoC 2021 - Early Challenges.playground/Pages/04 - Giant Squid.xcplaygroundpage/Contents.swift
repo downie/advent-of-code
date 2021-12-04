@@ -20,7 +20,6 @@ struct BingoCard {
     private var marks: [[Bool]]
     
     init(numberGrid: String) {
-        print(numberGrid)
         grid = numberGrid
             .components(separatedBy: .newlines)
             .map { row in
@@ -71,12 +70,16 @@ let demoInput = """
 18  8 23 26 20
 22 11 13  6  5
  2  0 12  3  7
+
 """
 
 func parseInput(string: String) -> ([BingoCard], [Int]) {
     let sections = string.components(separatedBy: "\n\n")
+        .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
     let numbers = sections[0].components(separatedBy: ",").compactMap(Int.init)
-    let cards = sections[1...].map(BingoCard.init(numberGrid:))
+    let cards = sections[1...]
+        .map{ $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+        .map(BingoCard.init(numberGrid:))
     return (cards, numbers)
 }
 
@@ -94,4 +97,80 @@ var winningCard = BingoCard(numberGrid: """
 assert(winningCard.sumOfUnmarkedNumbers == 188)
 assert(winningCard.hasWon)
 
+
+// MARK: - Part 1
+func finalScoreFromWinningCard(_ input: String) -> Int {
+    let (cards, numbers) = parseInput(string: input)
+    var bingoCards = cards
+    
+    var winningCard: BingoCard?
+    var lastNumber: Int?
+    for number in numbers {
+        for index in 0..<bingoCards.count {
+            bingoCards[index].mark(number: number)
+            if bingoCards[index].hasWon {
+                winningCard = bingoCards[index]
+                lastNumber = number
+            }
+        }
+        
+        if winningCard != nil {
+            break
+        }
+    }
+    
+    guard let card = winningCard,
+          let number = lastNumber else {
+              return -1
+          }
+    return card.sumOfUnmarkedNumbers * number
+}
+
+assert(finalScoreFromWinningCard(demoInput) == 4512)
+
+let file = Bundle.main.url(forResource: "04", withExtension: "txt")!
+var inputData = try! Data(contentsOf: file)
+let inputString = String(data: inputData, encoding: .utf8)!
+
+let part1 = finalScoreFromWinningCard(inputString)
+print("Part 1: \(part1)")
+
+// MARK: - Part 2
+
+func finalScoreFromLeastWinningestCard(_ input: String) -> Int {
+    let (cards, numbers) = parseInput(string: input)
+    var bingoCards = cards
+    
+    var mostRecentWinningCard: BingoCard?
+    var lastNumber: Int?
+    for number in numbers {
+        for index in 0..<bingoCards.count {
+            bingoCards[index].mark(number: number)
+            if bingoCards[index].hasWon {
+                mostRecentWinningCard = bingoCards[index]
+                lastNumber = number
+            }
+        }
+        
+        if bingoCards.allSatisfy({ $0.hasWon }) {
+            break
+        }
+    }
+    
+    guard let card = mostRecentWinningCard,
+          let number = lastNumber else {
+              return -1
+          }
+    return card.sumOfUnmarkedNumbers * number
+}
+
+let demoResult = finalScoreFromLeastWinningestCard(demoInput)
+if demoResult == 1924 {
+    print("hooray")
+} else {
+    print("boo: \(demoResult)")
+}
+
+let part2 = finalScoreFromLeastWinningestCard(inputString)
+print("Part 2: \(part2)")
 //: [Next](@next)
