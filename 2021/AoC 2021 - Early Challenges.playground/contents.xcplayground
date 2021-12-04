@@ -4,5 +4,6 @@
         <page name='01 - Sonar Sweep'/>
         <page name='02 - Dive!'/>
         <page name='03 - Binary Diagnostic'/>
+        <page name='04 - Giant Squid'/>
     </pages>
 </playground>
