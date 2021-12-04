@@ -38,7 +38,12 @@ struct BingoCard {
             for column in 0..<grid.count {
                 if grid[row][column] == number {
                     marks[row][column] = true
-                    // check for win condition.
+                    
+                    if marks[row].allSatisfy({ $0 }) {
+                        hasWon = true
+                    } else if marks.map({ $0[column] }).allSatisfy({ $0 }) {
+                        hasWon = true
+                    }
                     return
                 }
             }
@@ -87,5 +92,6 @@ var winningCard = BingoCard(numberGrid: """
 """)
 [14, 21, 17, 24, 4, 9, 23, 11, 5, 2, 0, 7].forEach { winningCard.mark(number: $0) }
 assert(winningCard.sumOfUnmarkedNumbers == 188)
+assert(winningCard.hasWon)
 
 //: [Next](@next)
