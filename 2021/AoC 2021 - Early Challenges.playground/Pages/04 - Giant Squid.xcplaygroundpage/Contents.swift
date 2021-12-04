@@ -143,17 +143,18 @@ func finalScoreFromLeastWinningestCard(_ input: String) -> Int {
     
     var mostRecentWinningCard: BingoCard?
     var lastNumber: Int?
-    for number in numbers {
+    
+    numberCaller: for number in numbers {
         for index in 0..<bingoCards.count {
             bingoCards[index].mark(number: number)
             if bingoCards[index].hasWon {
                 mostRecentWinningCard = bingoCards[index]
                 lastNumber = number
             }
-        }
-        
-        if bingoCards.allSatisfy({ $0.hasWon }) {
-            break
+            
+            if bingoCards.allSatisfy({ $0.hasWon }) {
+                break numberCaller
+            }
         }
     }
     
@@ -165,11 +166,7 @@ func finalScoreFromLeastWinningestCard(_ input: String) -> Int {
 }
 
 let demoResult = finalScoreFromLeastWinningestCard(demoInput)
-if demoResult == 1924 {
-    print("hooray")
-} else {
-    print("boo: \(demoResult)")
-}
+assert(demoResult == 1924)
 
 let part2 = finalScoreFromLeastWinningestCard(inputString)
 print("Part 2: \(part2)")
