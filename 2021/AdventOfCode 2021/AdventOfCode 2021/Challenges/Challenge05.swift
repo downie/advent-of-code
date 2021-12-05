@@ -41,8 +41,7 @@ class HydrothermalVents: ObservableObject {
         // Load the input
         let input: String
         if !isDemo {
-            let inputURL = Bundle.main.url(forResource: "05", withExtension: "txt")!
-            let inputData = try! Data(contentsOf: inputURL)
+            let inputData = NSDataAsset(name: "05")!.data
             input = String(data: inputData, encoding: .utf8)!
         } else {
             input = demoInput
@@ -117,10 +116,11 @@ class HydrothermalVents: ObservableObject {
 }
 
 struct Challenge05: View {
-    @StateObject var state = HydrothermalVents(isDemo: true)
+    @StateObject var state = HydrothermalVents()
     
     var body: some View {
         Text(state.output)
+            .frame(minWidth: 200)
             .onAppear {
                 state.solve()
             }
