@@ -36,8 +36,10 @@ class HydrothermalVents: ObservableObject {
     
     private let lines: [Line]
     private var sparseOverlapCount = [Point: Int]()
+    private let isPartTwo: Bool
     
-    init(isDemo: Bool = false) {
+    init(isDemo: Bool = false, isPartTwo: Bool = false) {
+        self.isPartTwo = isPartTwo
         // Load the input
         let input: String
         if !isDemo {
@@ -77,9 +79,13 @@ class HydrothermalVents: ObservableObject {
                 let direction = line.from.x < line.to.x ? 1 : -1
                 strideY = Array(repeating: line.from.y, count: abs(line.to.x - line.from.x) + 1)
                 strideX = Array(stride(from: line.from.x, through: line.to.x, by: direction))
-            } else {
+            } else if isPartTwo{
                 // diagonal line.
-                print("not yet")
+                let yDirection = line.from.y < line.to.y ? 1 : -1
+                let xDirection = line.from.x < line.to.x ? 1 : -1
+                strideY = Array(stride(from: line.from.y, through: line.to.y, by: yDirection))
+                strideX = Array(stride(from: line.from.x, through: line.to.x, by: xDirection))
+            } else {
                 strideY = []
                 strideX = []
             }
@@ -116,7 +122,7 @@ class HydrothermalVents: ObservableObject {
 }
 
 struct Challenge05: View {
-    @StateObject var state = HydrothermalVents()
+    @StateObject var state = HydrothermalVents(isPartTwo: true)
     
     var body: some View {
         Text(state.output)
