@@ -110,7 +110,7 @@ struct Challenge06: View {
                     simulation.advanceFor(days: simulationDurationInDays)
                 }
             Button {
-                pasteboard.prepareForNewContents(with: [.currentHostOnly])
+                pasteboard.prepareForNewContents()
                 let result = pasteboard.setString("\(simulation.fishCount)", forType: .string)
                 print("copied? \(result)")
             } label: {
