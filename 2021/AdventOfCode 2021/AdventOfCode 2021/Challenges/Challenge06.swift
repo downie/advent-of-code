@@ -7,12 +7,13 @@
 
 import SwiftUI
 
+private let demoInput = "3,4,3,1,2"
+
 class LanternfishSim: ObservableObject {
     @Published var fish: [Int]
-    private let demoInput = "3,4,3,1,2"
     private var day = 0
     
-    init(isDemo: Bool = false, isPartTwo: Bool = false) {
+    init(isDemo: Bool = false) {
         let input: String
         if !isDemo {
             let inputData = NSDataAsset(name: "06")!.data
@@ -48,12 +49,60 @@ class LanternfishSim: ObservableObject {
     }
 }
 
+class FastLanternfishSim: ObservableObject {
+    @Published var fishCount = 0
+    private var day = 0
+    // How many more fish will be born in `index` days
+    // This could be a Deque
+    private var spawnHorizon = Array(repeating: 0, count: 9)
+    
+    init(isDemo: Bool = false) {
+        let input: String
+        if !isDemo {
+            let inputData = NSDataAsset(name: "06")!.data
+            input = String(data: inputData, encoding: .utf8)!
+        } else {
+            input = demoInput
+        }
+        
+        let fish = input
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: ",")
+            .compactMap(Int.init)
+        
+        fishCount = fish.count
+        
+        fish.forEach { daysUntilSpawn in
+            spawnHorizon[daysUntilSpawn] += 1
+        }
+    }
+    
+    func advanceFor(days: Int) {
+        (0..<days).forEach { _ in
+            incrementDay()
+        }
+    }
+    
+    private func incrementDay() {
+        let newFishCount = spawnHorizon.first!
+        var newHorizon = Array(spawnHorizon.dropFirst())
+        // Babies go at index 8, at the end of the lsit
+        newHorizon.append(newFishCount)
+        fishCount += newFishCount
+        // Adults go back to position 6
+        newHorizon[6] += newFishCount
+        
+        spawnHorizon = newHorizon
+        day += 1
+    }
+}
+
 struct Challenge06: View {
-    let simulationDurationInDays = 80
-    @StateObject var simulation = LanternfishSim()
+    let simulationDurationInDays = 256
+    @StateObject var simulation = FastLanternfishSim()
     
     var body: some View {
-        Text("After \(simulationDurationInDays), there are \(simulation.fish.count) fish.")
+        Text("After \(simulationDurationInDays), there are \(simulation.fishCount) fish.")
             .frame(minWidth: 200)
             .onAppear {
                 simulation.advanceFor(days: simulationDurationInDays)
