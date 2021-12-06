@@ -100,13 +100,24 @@ class FastLanternfishSim: ObservableObject {
 struct Challenge06: View {
     let simulationDurationInDays = 256
     @StateObject var simulation = FastLanternfishSim()
+    let pasteboard = NSPasteboard.general
     
     var body: some View {
-        Text("After \(simulationDurationInDays), there are \(simulation.fishCount) fish.")
-            .frame(minWidth: 200)
-            .onAppear {
-                simulation.advanceFor(days: simulationDurationInDays)
+        VStack {
+            Text("After \(simulationDurationInDays), there are \(simulation.fishCount) fish.")
+                .frame(minWidth: 200)
+                .onAppear {
+                    simulation.advanceFor(days: simulationDurationInDays)
+                }
+            Button {
+                pasteboard.prepareForNewContents(with: [.currentHostOnly])
+                let result = pasteboard.setString("\(simulation.fishCount)", forType: .string)
+                print("copied? \(result)")
+            } label: {
+                Label("Copy", systemImage: "doc.on.doc")
             }
+
+        }
     }
 }
 
