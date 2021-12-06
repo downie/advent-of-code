@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		83195F61275E59000054CA69 /* Challenge06.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83195F60275E59000054CA69 /* Challenge06.swift */; };
 		83391513275D070600FB6B1D /* AdventOfCode_2021App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83391512275D070600FB6B1D /* AdventOfCode_2021App.swift */; };
 		83391515275D070600FB6B1D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83391514275D070600FB6B1D /* ContentView.swift */; };
 		83391517275D070B00FB6B1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83391516275D070B00FB6B1D /* Assets.xcassets */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		83195F60275E59000054CA69 /* Challenge06.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge06.swift; sourceTree = "<group>"; };
 		8339150F275D070600FB6B1D /* AdventOfCode 2021.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AdventOfCode 2021.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83391512275D070600FB6B1D /* AdventOfCode_2021App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventOfCode_2021App.swift; sourceTree = "<group>"; };
 		83391514275D070600FB6B1D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				8339153E275D07F900FB6B1D /* Challenge05.swift */,
+				83195F60275E59000054CA69 /* Challenge06.swift */,
 			);
 			path = Challenges;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83391515275D070600FB6B1D /* ContentView.swift in Sources */,
+				83195F61275E59000054CA69 /* Challenge06.swift in Sources */,
 				8339153F275D07F900FB6B1D /* Challenge05.swift in Sources */,
 				83391513275D070600FB6B1D /* AdventOfCode_2021App.swift in Sources */,
 			);
