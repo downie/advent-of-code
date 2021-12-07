@@ -12,7 +12,8 @@ private let demoInput = "16,1,2,0,4,2,7,1,2,14"
 class CrabSubFormations: ObservableObject {
     @Published var output = ""
     private let crabs: [Int]
-    private let isDemo = true
+    private let isDemo = false
+    private let isPartOne = true
 
     init() {
         let input: String
@@ -34,7 +35,7 @@ class CrabSubFormations: ObservableObject {
         let bestPair = (0...maxPosition)
             .map { alignOnPosition -> (position: Int, cost: Int) in
                 let cost = crabs
-                    .map { abs(alignOnPosition - $0) }
+                    .map { fuelCost(from: alignOnPosition, to: $0) }
                     .reduce(0, +)
                 return (position: alignOnPosition, cost: cost)
             }
@@ -47,6 +48,14 @@ class CrabSubFormations: ObservableObject {
             }
         
         output = "\(bestPair.cost)"
+    }
+    
+    private func fuelCost(from: Int, to: Int) -> Int {
+        if isPartOne {
+            return abs(to - from)
+        } else {
+            return abs(to - from)
+        }
     }
 }
 
