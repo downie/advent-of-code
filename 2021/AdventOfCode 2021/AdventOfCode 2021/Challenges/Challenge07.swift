@@ -13,7 +13,7 @@ class CrabSubFormations: ObservableObject {
     @Published var output = ""
     private let crabs: [Int]
     private let isDemo = false
-    private let isPartOne = true
+    private let isPartOne = false
 
     init() {
         let input: String
@@ -54,7 +54,21 @@ class CrabSubFormations: ObservableObject {
         if isPartOne {
             return abs(to - from)
         } else {
-            return abs(to - from)
+            return fuelCost(distance: abs(to - from))
+        }
+    }
+    
+    private var memoCost = [Int: Int]()
+    private func fuelCost(distance: Int) -> Int {
+        guard distance > 0 else {
+            return 0
+        }
+        if let knownCost = memoCost[distance] {
+            return knownCost
+        } else {
+            let cost = distance + fuelCost(distance: distance - 1)
+            memoCost[distance] = cost
+            return cost
         }
     }
 }
