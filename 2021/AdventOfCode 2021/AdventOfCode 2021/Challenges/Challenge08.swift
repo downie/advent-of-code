@@ -20,9 +20,56 @@ egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
 """
+struct ScrambledSegment {
+    let allDigits: [String]
+    let outputDigits: [String]
+    
+    var outputValue: Int {
+        outputDigits.reduce(0) { value, digitString in
+            guard value >= 0 else {
+                return value
+            }
+            guard let digit = segmentToDisplay[digitString] else {
+                return -1
+            }
+
+            var newValue = value * 10
+            newValue += digit
+            return newValue
+        }
+    }
+    
+    private var segmentToDisplay = [String: Int]()
+    
+    init(line: String) {
+        let parts = line.components(separatedBy: " | ")
+        let inputs = parts[0]
+            .components(separatedBy: .whitespaces)
+            .map { input in
+                String(input.sorted())
+            }.sorted { left, right in
+                left.count < right.count
+            }
+        let outputs = parts[1]
+            .components(separatedBy: .whitespaces)
+            .map { input in
+                String(input.sorted())
+            }
+        allDigits = inputs
+        outputDigits = outputs
+        
+        solve()
+    }
+    
+    func solve() {
+        
+    }
+}
+
 class SegmentDescrambler: ObservableObject {
     @Published var output = ""
     private var isDemo = true
+    private let isPartTwo = true
     
     private var input: String
     init() {
@@ -36,6 +83,14 @@ class SegmentDescrambler: ObservableObject {
     }
     
     func solve() {
+        if isPartTwo {
+            solvePartTwo()
+        } else {
+            solvePartOne()
+        }
+    }
+    
+    func solvePartOne() {
         let outputs = input
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .newlines)
@@ -57,7 +112,25 @@ class SegmentDescrambler: ObservableObject {
         }
         output = "\(result)"
     }
+    
+    func solvePartTwo() {
+        var lines = input
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .newlines)
+
+        if isDemo {
+            // Only do the first line for demo input on part 2
+            lines = Array(lines[...0])
+        }
+        
+        let segments = lines.map { ScrambledSegment(line: $0) }
+        let result = segments
+            .map { $0.outputValue }
+            .reduce(0, +)
+        output = "\(result)"
+    }
 }
+
 struct Challenge08: View {
     @StateObject var state = SegmentDescrambler()
     let pasteboard = NSPasteboard.general
