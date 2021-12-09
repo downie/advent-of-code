@@ -20,6 +20,11 @@ egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
 """
+
+private let partTwoDemoInput = """
+acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf
+"""
+
 struct ScrambledSegment {
     let allDigits: [String]
     let outputDigits: [String]
@@ -61,8 +66,64 @@ struct ScrambledSegment {
         solve()
     }
     
-    func solve() {
+    mutating func solve() {
+        // Canonical wire layout
+        //   aaaa
+        //  b    c
+        //  b    c
+        //   dddd
+        //  e    f
+        //  e    f
+        //   gggg
         
+        // allDigits is sorted, so we know the position of a few numbers
+        let wiresCF = allDigits[0]
+        assert(wiresCF.count == 2)
+        let wiresACF = allDigits[1]
+        assert(wiresACF.count == 3)
+        let wiresBCDF = allDigits[2]
+        assert(wiresBCDF.count == 4)
+        let wiresABCDEFG = allDigits[9]
+        assert(wiresABCDEFG.count == 7)
+        
+        segmentToDisplay[wiresCF] = 1
+        segmentToDisplay[wiresACF] = 7
+        segmentToDisplay[wiresBCDF] = 4
+        segmentToDisplay[wiresABCDEFG] = 8
+        
+        let fiveSegments = allDigits.filter { $0.count == 5 }
+        var sixSegments = allDigits.filter { $0.count == 6 }
+
+        // 6 is a 6-segment that doesn't contains wires CF
+        let wiresABDEFGIndex = sixSegments.firstIndex { segments in
+            !wiresCF.allSatisfy { segments.contains($0) }
+        }!
+        let wiresABDEFG = sixSegments.remove(at: wiresABDEFGIndex)
+        segmentToDisplay[wiresABDEFG] = 6
+        let wiresABCDFGIndex = sixSegments.firstIndex { segments in
+            Set(segments).isSuperset(of: Set(wiresBCDF))
+        }!
+        let wiresABCDFG = sixSegments.remove(at: wiresABCDFGIndex)
+        segmentToDisplay[wiresABCDFG] = 9
+        assert(sixSegments.count == 1)
+        let wiresABCEFG = sixSegments.first!
+        segmentToDisplay[wiresABCEFG] = 0
+        
+        // 5 only has one difference between the 6 segment display, the other 5-segs have 2 differences
+        let wiresABDFG = fiveSegments.first { segments in
+            let difference = Set(wiresABDEFG).subtracting(Set(segments)).count
+            return difference == 1
+        }!
+        segmentToDisplay[wiresABDFG] = 5
+        let bitThatRepresentsE = Array(Set(wiresABDEFG).subtracting(Set(wiresABDFG))).first!
+        let wiresACDEG = fiveSegments.first { segments in
+            segments != wiresABDFG && segments.contains(bitThatRepresentsE)
+        }!
+        segmentToDisplay[wiresACDEG] = 2
+        let wiresACDFG = fiveSegments.first { segments in
+            segments != wiresABDFG && segments != wiresACDEG
+        }!
+        segmentToDisplay[wiresACDFG] = 3
     }
 }
 
@@ -73,7 +134,6 @@ class SegmentDescrambler: ObservableObject {
     
     private var input: String
     init() {
-//        let input: String
         if !isDemo {
             let inputData = NSDataAsset(name: "08")!.data
             input = String(data: inputData, encoding: .utf8)!
@@ -114,14 +174,12 @@ class SegmentDescrambler: ObservableObject {
     }
     
     func solvePartTwo() {
+        if isDemo {
+            input = partTwoDemoInput
+        }
         var lines = input
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .newlines)
-
-        if isDemo {
-            // Only do the first line for demo input on part 2
-            lines = Array(lines[...0])
-        }
         
         let segments = lines.map { ScrambledSegment(line: $0) }
         let result = segments
