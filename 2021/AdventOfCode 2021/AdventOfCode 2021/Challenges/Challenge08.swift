@@ -129,7 +129,7 @@ struct ScrambledSegment {
 
 class SegmentDescrambler: ObservableObject {
     @Published var output = ""
-    private var isDemo = true
+    private var isDemo = false
     private let isPartTwo = true
     
     private var input: String
@@ -174,10 +174,7 @@ class SegmentDescrambler: ObservableObject {
     }
     
     func solvePartTwo() {
-        if isDemo {
-            input = partTwoDemoInput
-        }
-        var lines = input
+        let lines = input
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .newlines)
         
