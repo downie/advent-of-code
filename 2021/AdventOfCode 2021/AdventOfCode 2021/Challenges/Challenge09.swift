@@ -17,8 +17,7 @@ private let demoInput = """
 class SteamDepthmap: ObservableObject {
     @Published var output = ""
     private let depthGrid: [Point: Int]
-    private let isDemo = true
-//    private let size: CGSize
+    private let isDemo = false
     
     init() {
         let input: String
@@ -49,12 +48,6 @@ class SteamDepthmap: ObservableObject {
                 let (point, value) = pair
                 partialResult[point] = value
             }
-//        size = allPoints.reduce(CGSize.zero) { partialResult, pair in
-//            let (point, _) = pair
-//            let width = max(point.x, partialResult.width)
-//            let height = max(point.y, partialResult.height)
-//            return CGSize(width: width, height: height)
-//        }
     }
     
     func depth(at point: Point) -> Int {
