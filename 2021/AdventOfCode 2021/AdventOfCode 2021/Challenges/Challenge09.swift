@@ -17,7 +17,7 @@ private let demoInput = """
 class SteamDepthmap: ObservableObject {
     @Published var output = ""
     private let depthGrid: [Point: Int]
-    private let isDemo = true
+    private let isDemo = false
     private let isPartOne = false
     
     init() {
