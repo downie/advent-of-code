@@ -17,7 +17,8 @@ private let demoInput = """
 class SteamDepthmap: ObservableObject {
     @Published var output = ""
     private let depthGrid: [Point: Int]
-    private let isDemo = false
+    private let isDemo = true
+    private let isPartOne = false
     
     init() {
         let input: String
@@ -54,8 +55,38 @@ class SteamDepthmap: ObservableObject {
         depthGrid[point] ?? Int.max
     }
     
+    func basinSize(from lowestPoint: Point) -> Int {
+        var basin = Set([lowestPoint])
+        var boundaryPoints = Set(
+            [
+                Point(x: lowestPoint.x, y: lowestPoint.y - 1),
+                Point(x: lowestPoint.x, y: lowestPoint.y + 1),
+                Point(x: lowestPoint.x - 1, y: lowestPoint.y),
+                Point(x: lowestPoint.x + 1, y: lowestPoint.y),
+            ].filter { depth(at: $0) < 9 }
+        )
+        
+        while !boundaryPoints.isEmpty {
+            basin = basin.union(boundaryPoints)
+            
+            let newBoundary = boundaryPoints
+                .flatMap { point in
+                    [
+                        Point(x: point.x, y: point.y - 1),
+                        Point(x: point.x, y: point.y + 1),
+                        Point(x: point.x - 1, y: point.y),
+                        Point(x: point.x + 1, y: point.y),
+                    ]
+                        .filter { !basin.contains($0) }
+                        .filter { depth(at: $0) < 9 }
+                }
+            boundaryPoints = Set(newBoundary)
+        }
+        return basin.count
+    }
+    
     func solve() {
-        let result = depthGrid
+        let lowestPoints = depthGrid
             .keys
             .filter { point in
                 let above = Point(x: point.x, y: point.y - 1)
@@ -69,10 +100,25 @@ class SteamDepthmap: ObservableObject {
                 && thisDepth < depth(at: left)
                 && thisDepth < depth(at: right)
             }
-            .map(depth(at:))
-            .map { $0 + 1 }
-            .reduce(0, +)
-        output = "\(result)"
+        if isPartOne {
+            let result = lowestPoints
+                .map(depth(at:))
+                .map { $0 + 1 }
+                .reduce(0, +)
+            output = "\(result)"
+        } else {
+            let threeLargestBasins = lowestPoints.map { point -> (Point, Int) in
+                (point, basinSize(from: point))
+            }
+            .sorted { left, right in
+                left.1 > right.1
+            }[0..<3]
+            
+            let product = threeLargestBasins
+                .map { $0.1 }
+                .reduce(1, *)
+            output = "\(product)"
+        }
     }
 }
 
