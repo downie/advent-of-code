@@ -23,10 +23,11 @@ private let demoInput = """
 class ParenParser: ObservableObject {
     @Published var output = ""
     private let isDemo = false
+    private let isPartTwo = true
     private let input: String
     enum ParseResult {
         case complete
-        case incomplete
+        case incomplete(unmatched: String)
         case corrupted(token: Character)
     }
     
@@ -40,20 +41,38 @@ class ParenParser: ObservableObject {
     }
 
     func solve() {
-        let corruptedLines = input
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .components(separatedBy: .newlines)
-            .map { verify(line: $0) }
-            .filter { result in
-                if case .corrupted = result {
-                    return true
+        if !isPartTwo {
+            let corruptedLines = input
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .components(separatedBy: .newlines)
+                .map { verify(line: $0) }
+                .filter { result in
+                    if case .corrupted = result {
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        let result = corruptedLines
-            .map { score(result: $0) }
-            .reduce(0, +)
-        output = "\(result)"
+            let result = corruptedLines
+                .map { score(result: $0) }
+                .reduce(0, +)
+            output = "\(result)"
+        } else {
+            let missingLines = input
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .components(separatedBy: .newlines)
+                .map { verify(line: $0) }
+                .filter { result in
+                    if case .incomplete = result {
+                        return true
+                    }
+                    return false
+                }
+            let scores = missingLines
+                .map { score(result: $0) }
+                .sorted()
+            let middleValue = scores[scores.count / 2]
+            output = "\(middleValue)"
+        }
     }
     
     private func verify(line: String) -> ParseResult {
@@ -78,15 +97,27 @@ class ParenParser: ObservableObject {
             }
         }
         guard stack.isEmpty else {
-            return .incomplete
+            return .incomplete(unmatched: String(stack.reversed()))
         }
         return .complete
     }
     
     private func score(result: ParseResult) -> Int {
         switch result {
-        case .incomplete, .complete:
+        case .complete:
             return 0
+        case .incomplete(let missing):
+            return missing.reduce(0) { partialResult, nextLetter in
+                var letterValue: Int
+                switch nextLetter {
+                case ")", "(": letterValue = 1
+                case "]", "[": letterValue = 2
+                case "}", "{": letterValue = 3
+                case ">", "<": letterValue = 4
+                default: fatalError()
+                }
+                return 5 * partialResult + letterValue
+            }
         case .corrupted(let token) where token == ")":
             return 3
         case .corrupted(let token) where token == "]":
