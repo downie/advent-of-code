@@ -43,15 +43,15 @@ extension Point {
 
 class OctopusLightShow: ObservableObject {
     @Published var output = ""
-    var steps = 10
+    var steps = 100
     private var flashes = 0
-    private let isDemo = true
+    private let isDemo = false
     private var energyGrid: [Point: Int]
     
     init() {
         let input: String
         if !isDemo {
-            let inputData = NSDataAsset(name: "10")!.data
+            let inputData = NSDataAsset(name: "11")!.data
             input = String(data: inputData, encoding: .utf8)!
         } else {
             input = demoInput
