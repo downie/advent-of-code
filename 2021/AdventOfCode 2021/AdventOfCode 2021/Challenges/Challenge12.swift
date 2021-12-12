@@ -86,7 +86,7 @@ struct GraphEdge: Equatable, Hashable {
 
 class CaveMapper: ObservableObject {
     @Published var output = ""
-    private let demo: Int? = 0
+    private let demo: Int? = nil
     
     private let edges: Set<GraphEdge>
     
