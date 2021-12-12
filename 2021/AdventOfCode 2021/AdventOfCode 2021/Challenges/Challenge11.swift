@@ -43,9 +43,10 @@ extension Point {
 
 class OctopusLightShow: ObservableObject {
     @Published var output = ""
-    var steps = 100
+    private var steps = 100
     private var flashes = 0
     private let isDemo = false
+    private let isPartTwo = true
     private var energyGrid: [Point: Int]
     
     init() {
@@ -80,7 +81,12 @@ class OctopusLightShow: ObservableObject {
     }
 
     func solve() {
-        for _ in 0..<steps {
+        if isPartTwo {
+            // Not to run forever, but close enough.
+            steps = Int.max
+        }
+        var syncFlashStep: Int?
+        for step in 0..<steps {
             var nextGrid = [Point: Int]()
             var flashesToResolve = Set<Point>()
             var resolvedFlashes = Set<Point>()
@@ -115,10 +121,19 @@ class OctopusLightShow: ObservableObject {
             resolvedFlashes.forEach { point in
                 nextGrid[point] = 0
             }
+            
+            if isPartTwo && resolvedFlashes.count == energyGrid.count {
+                syncFlashStep = step
+                break
+            }
             energyGrid = nextGrid
         }
-        
-        output = "\(flashes)"
+
+        if isPartTwo {
+            output = "\((syncFlashStep ?? -1) + 1)" // output is 1-based, not 0-based
+        } else {
+            output = "\(flashes)"
+        }
     }
 }
 
