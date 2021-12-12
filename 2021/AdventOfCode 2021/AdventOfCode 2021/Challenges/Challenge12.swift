@@ -86,7 +86,8 @@ struct GraphEdge: Equatable, Hashable {
 
 class CaveMapper: ObservableObject {
     @Published var output = ""
-    private let demo: Int? = nil
+    private let demo: Int? = 0
+    private let isPartTwo = true
     
     private let edges: Set<GraphEdge>
     
@@ -116,35 +117,65 @@ class CaveMapper: ObservableObject {
         output = "\(pathCount)"
     }
     
-    private func recursiveDFS(from node: String, remainingEdges: Set<GraphEdge>, path: [String] = []) -> Int {
+    private func recursiveDFS(from node: String, remainingEdges: Set<GraphEdge>, doubledSmallNode: String? = nil, path: [String] = []) -> Int {
+        // Our end of the recursion
         if node == "end" {
-            print(path.joined(separator: ","))
-            return 1
+            guard isPartTwo else {
+                return 1
+            }
+            guard let doubledSmallNode = doubledSmallNode else {
+                print(path.joined(separator: ","))
+                return 1
+            }
+            // Only count doubled paths if we used the small node twice. Otherwise, we'll double-count it.
+            if path.filter({ $0 == doubledSmallNode}).count == 2 {
+                print(path.joined(separator: ","))
+                return 1
+            }
+
+            return 0
         }
+        
         let edgeOptions = remainingEdges.filter { edge in
             edge.from == node || edge.to == node
         }
         if edgeOptions.isEmpty {
             return 0
         }
+        
+        // Tracing for debugging
         var updatedPath = path
         updatedPath.append(node)
         
+        // Remove edges from the remaining edges set
         var oneFewerEdges = remainingEdges
-        if node.uppercased() != node {
+        let isSmallCave = (node.uppercased() != node)
+        var pathCount = [Int]()
+        if isSmallCave {
+            // Never visit 'node' again
             oneFewerEdges = oneFewerEdges.filter { edge in
                 edge.from != node && edge.to != node
             }
+            if isPartTwo && doubledSmallNode == nil && node != "start" {
+                let whatIfWeVisitedThisNodeTwiceCount = edgeOptions.map { takingPath -> Int in
+                    guard let destination = takingPath.opposite(node: node) else {
+                        return 0
+                    }
+                    
+                    return recursiveDFS(from: destination, remainingEdges: remainingEdges, doubledSmallNode: node, path: updatedPath)
+                }
+                pathCount.append(contentsOf: whatIfWeVisitedThisNodeTwiceCount)
+            }
         }
-        
-        let pathCount = edgeOptions.map { takingPath -> Int in
+        let whatIfWeNeverCameBackHere = edgeOptions.map { takingPath -> Int in
             guard let destination = takingPath.opposite(node: node) else {
                 return 0
             }
-
-            return recursiveDFS(from: destination, remainingEdges: oneFewerEdges, path: updatedPath)
+            
+            return recursiveDFS(from: destination, remainingEdges: oneFewerEdges, doubledSmallNode: doubledSmallNode, path: updatedPath)
         }
-        
+        pathCount.append(contentsOf: whatIfWeNeverCameBackHere)
+
         return pathCount.reduce(0, +)
     }
 }
