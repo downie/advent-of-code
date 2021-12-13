@@ -86,7 +86,7 @@ struct GraphEdge: Equatable, Hashable {
 
 class CaveMapper: ObservableObject {
     @Published var output = ""
-    private let demo: Int? = 0
+    private let demo: Int? = nil
     private let isPartTwo = true
     
     private let edges: Set<GraphEdge>
@@ -124,12 +124,16 @@ class CaveMapper: ObservableObject {
                 return 1
             }
             guard let doubledSmallNode = doubledSmallNode else {
-                print(path.joined(separator: ","))
+                if demo != nil {
+                    print(path.joined(separator: ","))
+                }
                 return 1
             }
             // Only count doubled paths if we used the small node twice. Otherwise, we'll double-count it.
             if path.filter({ $0 == doubledSmallNode}).count == 2 {
-                print(path.joined(separator: ","))
+                if demo != nil {
+                    print(path.joined(separator: ","))
+                }
                 return 1
             }
 
