@@ -39,7 +39,7 @@ enum Fold {
 
 class PaperFlipper: ObservableObject {
     @Published var output = ""
-    private let isDemo = true
+    private let isDemo = false
     private let isPartTwo = true
     
     private var dots = Set<Point>()
