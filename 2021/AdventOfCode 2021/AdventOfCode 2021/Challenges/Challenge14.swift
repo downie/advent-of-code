@@ -36,9 +36,11 @@ class PolymerExtruder: ObservableObject {
     }
     
     @Published var output = ""
-    private let isDemo = false
-    private let isPartTwo = false
-    private let maxSteps = 10
+    private let isDemo = true
+    private let isPartTwo = true
+    private var maxSteps: Int {
+        isPartTwo ? 40 : 10
+    }
     
     var polymer: String
     var rules: [String: Character] // [from : to]
@@ -81,6 +83,23 @@ class PolymerExtruder: ObservableObject {
     }
     
     func iterate(polymer: String) -> String {
+        String(iterate(polymerCharacters: Array(polymer)))
+//        var parts = [Character]()
+//
+//        for offset in 0..<polymer.count-1 {
+//            let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
+//            let pair = polymer[index...polymer.index(after: index)]
+//            parts.append(polymer[index])
+//            if let insertion = rules[String(pair)] {
+//                parts.append(insertion)
+//            }
+//        }
+//        parts.append(polymer.last!)
+//
+//        return String(parts)
+    }
+    
+    func iterate(polymerCharacters: [Character]) -> [Character] {
         var parts = [Character]()
         
         for offset in 0..<polymer.count-1 {
@@ -93,7 +112,7 @@ class PolymerExtruder: ObservableObject {
         }
         parts.append(polymer.last!)
         
-        return String(parts)
+        return parts
     }
     
     func score(polymer: String) -> Int {
