@@ -39,7 +39,7 @@ enum Fold {
 
 class PaperFlipper: ObservableObject {
     @Published var output = ""
-    private let isDemo = true
+    private let isDemo = false
     private let isPartTwo = false
     
     private var dots = Set<Point>()
@@ -102,18 +102,21 @@ class PaperFlipper: ObservableObject {
                 return point.x > xAxis
             }
         }
-        
-        let movedPoints = points.map { point -> Point in
+        print("fold is \(folding)")
+        let movedPoints = pointsToMove.map { point -> Point in
+            let newPoint: Point
             switch folding {
             case .up(let yAxis):
                 let distance = point.y - yAxis
-                let newY = point.y - distance
-                return Point(x: point.x, y: newY)
+                let newY = yAxis - distance
+                newPoint = Point(x: point.x, y: newY)
             case .left(let xAxis):
                 let distance = point.x - xAxis
-                let newX = point.x - distance
-                return Point(x: newX, y: point.y)
+                let newX = xAxis - distance
+                newPoint = Point(x: newX, y: point.y)
             }
+            print("Moving \(point) to \(newPoint)")
+            return newPoint
         }
         
         let newSet = points.subtracting(pointsToMove).union(movedPoints)
