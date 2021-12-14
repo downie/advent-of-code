@@ -36,7 +36,7 @@ class PolymerExtruder: ObservableObject {
     }
     
     @Published var output = ""
-    private let isDemo = true
+    private let isDemo = false
     private let isPartTwo = false
     private let maxSteps = 10
     
