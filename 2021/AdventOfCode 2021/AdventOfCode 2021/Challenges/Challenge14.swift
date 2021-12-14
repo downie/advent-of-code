@@ -38,6 +38,7 @@ class PolymerExtruder: ObservableObject {
     @Published var output = ""
     private let isDemo = true
     private let isPartTwo = true
+    private let isMultithreaded = true
     private var maxSteps: Int {
         isPartTwo ? 40 : 10
     }
@@ -68,12 +69,12 @@ class PolymerExtruder: ObservableObject {
     
     private let queue = OperationQueue()
     private class IterateOperation: Operation {
-        private let polymer: [Character]
+        private let polymer: ArraySlice<Character>
         private let rules: [String: Character]
         private let includingLastLetter: Bool
         var result = [Character]()
         
-        init(polymer: [Character], rules: [String: Character], includingLastLetter: Bool = false) {
+        init(polymer: ArraySlice<Character>, rules: [String: Character], includingLastLetter: Bool = false) {
             self.polymer = polymer
             self.rules = rules
             self.includingLastLetter = includingLastLetter
@@ -94,28 +95,63 @@ class PolymerExtruder: ObservableObject {
         }
     }
     
+    private class CombineOperation: Operation {
+        private let callback: ([Character]) -> Void
+        
+        init(callback: @escaping ([Character]) -> Void) {
+            self.callback = callback
+        }
+        
+        override func main() {
+            let chars = dependencies.flatMap { op in
+                (op as! IterateOperation).result
+            }
+            callback(chars)
+        }
+    }
+    
     func solve() {
-//        if isPartTwo {
-//            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-//                guard let self = self else { return }
-//                (0..<self.maxSteps).forEach { step in
-//                    let nextPolymer: [Character]
-//                    if polymer.count < 10_000 {
-//                    let nextPolymer = iterate(polymer: polymer)
-//                    }
-//                    if isDemo {
-//                        if step < 4 {
-//                            print("After step \(step + 1): \(nextPolymer)")
-//                        } else {
-//                            print("After step \(step + 1): \(nextPolymer.count)")
-//                        }
-//                    }
-//                    polymer = nextPolymer
-//                }
-//                queue.addOperations(, waitUntilFinished: true)
-//            }
-//
-//        } else {
+        if isMultithreaded {
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let self = self else { return }
+                var chars: [Character] = Array(self.polymer)
+                let chunkSize = chars.count
+                (0..<self.maxSteps).forEach { step in
+                    let chunks = stride(from: 0, to: chars.count, by: chunkSize)
+                        .map { startIndex -> ArraySlice<Character> in
+                            let end = min((startIndex+1)*chunkSize + 1, chars.count)
+                            let subset = chars[startIndex..<end]
+                            return subset
+                        }
+                    var operations: [Operation] = chunks.map { slice in
+                        IterateOperation(polymer: slice, rules: self.rules, includingLastLetter: false)
+                    }
+                    let resultOperation = CombineOperation { newChars in
+                        let lastChar = chars.last!
+                        chars = newChars
+                        chars.append(lastChar)
+                        if self.isDemo {
+                            if step < 4 {
+                                print("After step \(step + 1): \(String(chars))")
+                            } else {
+                                print("After step \(step + 1): \(chars.count)")
+                            }
+                        }
+                    }
+                    operations.forEach { op in
+                        resultOperation.addDependency(op)
+                    }
+                    operations.append(resultOperation)
+                    self.queue.addOperations(operations, waitUntilFinished: true)
+                }
+
+                let finalResult = String(chars)
+                DispatchQueue.main.async { [weak self] in
+                    self?.output = finalResult
+                }
+            }
+
+        } else {
             var chars = Array(polymer)
             (0..<maxSteps).forEach { step in
                 let nextPolymer = iterate(polymerCharacters: chars)
@@ -130,7 +166,7 @@ class PolymerExtruder: ObservableObject {
             }
             let result = score(polymer: String(chars))
             output = "\(result)"
-//        }
+        }
     }
     
     func iterate(polymer: String) -> String {
