@@ -39,8 +39,8 @@ enum Fold {
 
 class PaperFlipper: ObservableObject {
     @Published var output = ""
-    private let isDemo = false
-    private let isPartTwo = false
+    private let isDemo = true
+    private let isPartTwo = true
     
     private var dots = Set<Point>()
     private var folds = [Fold]()
@@ -85,7 +85,10 @@ class PaperFlipper: ObservableObject {
     
     func solve() {
         if isPartTwo {
-            
+            let result = folds.reduce(into: dots) { updatedDots, nextFold in
+                updatedDots = fold(points: updatedDots, folding: nextFold)
+            }
+            output = display(dots: result)
         } else {
             // just do the first fold
             let result = fold(points: dots, folding: folds.first!)
@@ -102,7 +105,7 @@ class PaperFlipper: ObservableObject {
                 return point.x > xAxis
             }
         }
-        print("fold is \(folding)")
+//        print("fold is \(folding)")
         let movedPoints = pointsToMove.map { point -> Point in
             let newPoint: Point
             switch folding {
@@ -115,12 +118,37 @@ class PaperFlipper: ObservableObject {
                 let newX = xAxis - distance
                 newPoint = Point(x: newX, y: point.y)
             }
-            print("Moving \(point) to \(newPoint)")
+//            print("Moving \(point) to \(newPoint)")
             return newPoint
         }
         
         let newSet = points.subtracting(pointsToMove).union(movedPoints)
         return newSet
+    }
+    
+    private func display(dots: Set<Point>) -> String {
+        let topLeft = dots.reduce(into: Point(x: 0, y: 0)) { lowestPoint, nextPoint in
+            let x = min(lowestPoint.x, nextPoint.x)
+            let y = min(lowestPoint.y, nextPoint.y)
+            lowestPoint = Point(x: x, y: y)
+        }
+        let bottomRight = dots.reduce(into: Point(x: 0, y: 0)) { highestPoint, nextPoint in
+            let x = max(highestPoint.x, nextPoint.x)
+            let y = max(highestPoint.y, nextPoint.y)
+            highestPoint = Point(x: x, y: y)
+        }
+        
+        let lines = (topLeft.y...bottomRight.y)
+            .map { y -> String in
+                let letters = (topLeft.x...bottomRight.x).map { x -> Character in
+                    if dots.contains(Point(x: x, y: y)) {
+                        return "#"
+                    }
+                    return "."
+                }
+                return String(letters)
+            }
+        return lines.joined(separator: "\n")
     }
 }
 
@@ -131,7 +159,7 @@ struct Challenge13: View {
     var body: some View {
         VStack {
             Text(state.output)
-                .frame(minWidth: 200)
+                .font(.system(.body, design: .monospaced))
                 .onAppear {
                     state.solve()
                 }
@@ -142,6 +170,7 @@ struct Challenge13: View {
                 Label("Copy", systemImage: "doc.on.doc")
             }
         }
+        .frame(minWidth: 200)
     }
 }
 
