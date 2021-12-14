@@ -66,40 +66,78 @@ class PolymerExtruder: ObservableObject {
             }
     }
     
-    func solve() {
-        (0..<maxSteps).forEach { step in
-            let nextPolymer = iterate(polymer: polymer)
-            if isDemo {
-                if step < 4 {
-                    print("After step \(step + 1): \(nextPolymer)")
-                } else {
-                    print("After step \(step + 1): \(nextPolymer.count)")
+    private let queue = OperationQueue()
+    private class IterateOperation: Operation {
+        private let polymer: [Character]
+        private let rules: [String: Character]
+        private let includingLastLetter: Bool
+        var result = [Character]()
+        
+        init(polymer: [Character], rules: [String: Character], includingLastLetter: Bool = false) {
+            self.polymer = polymer
+            self.rules = rules
+            self.includingLastLetter = includingLastLetter
+        }
+        
+        override func main() {
+            for offset in 0..<polymer.count-1 {
+                let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
+                let pair = polymer[index...polymer.index(after: index)]
+                result.append(polymer[index])
+                if let insertion = rules[String(pair)] {
+                    result.append(insertion)
                 }
             }
-            polymer = nextPolymer
+            if includingLastLetter {
+                result.append(polymer.last!)
+            }
         }
-        let result = score(polymer: polymer)
-        output = "\(result)"
+    }
+    
+    func solve() {
+//        if isPartTwo {
+//            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+//                guard let self = self else { return }
+//                (0..<self.maxSteps).forEach { step in
+//                    let nextPolymer: [Character]
+//                    if polymer.count < 10_000 {
+//                    let nextPolymer = iterate(polymer: polymer)
+//                    }
+//                    if isDemo {
+//                        if step < 4 {
+//                            print("After step \(step + 1): \(nextPolymer)")
+//                        } else {
+//                            print("After step \(step + 1): \(nextPolymer.count)")
+//                        }
+//                    }
+//                    polymer = nextPolymer
+//                }
+//                queue.addOperations(, waitUntilFinished: true)
+//            }
+//
+//        } else {
+            var chars = Array(polymer)
+            (0..<maxSteps).forEach { step in
+                let nextPolymer = iterate(polymerCharacters: chars)
+                if isDemo {
+                    if step < 4 {
+                        print("After step \(step + 1): \(nextPolymer)")
+                    } else {
+                        print("After step \(step + 1): \(nextPolymer.count)")
+                    }
+                }
+                chars = nextPolymer
+            }
+            let result = score(polymer: String(chars))
+            output = "\(result)"
+//        }
     }
     
     func iterate(polymer: String) -> String {
         String(iterate(polymerCharacters: Array(polymer)))
-//        var parts = [Character]()
-//
-//        for offset in 0..<polymer.count-1 {
-//            let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
-//            let pair = polymer[index...polymer.index(after: index)]
-//            parts.append(polymer[index])
-//            if let insertion = rules[String(pair)] {
-//                parts.append(insertion)
-//            }
-//        }
-//        parts.append(polymer.last!)
-//
-//        return String(parts)
     }
     
-    func iterate(polymerCharacters: [Character]) -> [Character] {
+    func iterate(polymerCharacters polymer: [Character]) -> [Character] {
         var parts = [Character]()
         
         for offset in 0..<polymer.count-1 {
@@ -132,6 +170,8 @@ class PolymerExtruder: ObservableObject {
         return maximum - minimum
     }
 }
+
+
 
 struct Challenge14: View {
     @StateObject var state = PolymerExtruder()
