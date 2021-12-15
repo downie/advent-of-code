@@ -67,90 +67,9 @@ class PolymerExtruder: ObservableObject {
             }
     }
     
-    private let queue = OperationQueue()
-    private class IterateOperation: Operation {
-        private let polymer: ArraySlice<Character>
-        private let rules: [String: Character]
-        private let includingLastLetter: Bool
-        var result = [Character]()
-        
-        init(polymer: ArraySlice<Character>, rules: [String: Character], includingLastLetter: Bool = false) {
-            self.polymer = polymer
-            self.rules = rules
-            self.includingLastLetter = includingLastLetter
-        }
-        
-        override func main() {
-            for offset in 0..<polymer.count-1 {
-                let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
-                let pair = polymer[index...polymer.index(after: index)]
-                result.append(polymer[index])
-                if let insertion = rules[String(pair)] {
-                    result.append(insertion)
-                }
-            }
-            if includingLastLetter {
-                result.append(polymer.last!)
-            }
-        }
-    }
-    
-    private class CombineOperation: Operation {
-        private let callback: ([Character]) -> Void
-        
-        init(callback: @escaping ([Character]) -> Void) {
-            self.callback = callback
-        }
-        
-        override func main() {
-            let chars = dependencies.flatMap { op in
-                (op as! IterateOperation).result
-            }
-            callback(chars)
-        }
-    }
-    
     func solve() {
-        if isMultithreaded {
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let self = self else { return }
-                var chars: [Character] = Array(self.polymer)
-                let chunkSize = chars.count
-                (0..<self.maxSteps).forEach { step in
-                    let chunks = stride(from: 0, to: chars.count, by: chunkSize)
-                        .map { startIndex -> ArraySlice<Character> in
-                            let end = min((startIndex+1)*chunkSize + 1, chars.count)
-                            let subset = chars[startIndex..<end]
-                            return subset
-                        }
-                    var operations: [Operation] = chunks.map { slice in
-                        IterateOperation(polymer: slice, rules: self.rules, includingLastLetter: false)
-                    }
-                    let resultOperation = CombineOperation { newChars in
-                        let lastChar = chars.last!
-                        chars = newChars
-                        chars.append(lastChar)
-                        if self.isDemo {
-                            if step < 4 {
-                                print("After step \(step + 1): \(String(chars))")
-                            } else {
-                                print("After step \(step + 1): \(chars.count)")
-                            }
-                        }
-                    }
-                    operations.forEach { op in
-                        resultOperation.addDependency(op)
-                    }
-                    operations.append(resultOperation)
-                    self.queue.addOperations(operations, waitUntilFinished: true)
-                }
-
-                let finalResult = String(chars)
-                DispatchQueue.main.async { [weak self] in
-                    self?.output = finalResult
-                }
-            }
-
+        if isPartTwo {
+            output = "::shrugs::"
         } else {
             var chars = Array(polymer)
             (0..<maxSteps).forEach { step in
