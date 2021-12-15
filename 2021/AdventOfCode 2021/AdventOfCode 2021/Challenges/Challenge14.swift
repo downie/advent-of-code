@@ -45,6 +45,7 @@ class PolymerExtruder: ObservableObject {
     
     var polymer: String
     var rules: [String: Character] // [from : to]
+    var treeRules: [Character: [Character: Character]]
     
     init() {
         let input: String
@@ -65,6 +66,13 @@ class PolymerExtruder: ObservableObject {
                 let pair = line.components(separatedBy: " -> ")
                 partialResult[pair[0]] = Character(pair[1])
             }
+        treeRules = rules.reduce(into: [Character: [Character: Character]]()) { partialResult, pair in
+            let firstLetter = pair.key[pair.key.startIndex]
+            let secondLetter = pair.key[pair.key.index(after: pair.key.startIndex)]
+            var firstLetterMap = partialResult[firstLetter, default: [Character: Character]()]
+            firstLetterMap[secondLetter] = pair.value
+            partialResult[pair.key[pair.key.startIndex]] = firstLetterMap
+        }
     }
     
     func solve() {
@@ -151,6 +159,7 @@ class PolymerExtruder: ObservableObject {
     func depthFirstScore(polymer: [Character], depth: Int, counts: inout [Character: Int]) {
         guard depth < maxSteps,
               let insertion = rules[String(polymer)] else {
+//                  let insertion = tree[polymer[polymer.startIndex]][polymer[polymer.index(after: polymer.startIndex)]] else {
             // only count the first letter
             let letter = polymer.first!
             counts[letter] = counts[letter, default: 0] + 1
