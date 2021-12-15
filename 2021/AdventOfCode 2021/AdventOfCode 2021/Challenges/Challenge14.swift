@@ -36,8 +36,8 @@ class PolymerExtruder: ObservableObject {
     }
     
     @Published var output = ""
-    private let isDemo = false
-    private let isPartTwo = false
+    private let isDemo = true
+    private let isPartTwo = true
     private let isDFS = true
     private var maxSteps: Int {
         isPartTwo ? 40 : 10
@@ -133,8 +133,10 @@ class PolymerExtruder: ObservableObject {
         for offset in 0..<polymer.count-1 {
             let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
             let pair = polymer[index...polymer.index(after: index)]
+            print("Starting depth 0 at offset \(offset)")
             depthFirstScore(polymer: Array(pair), depth: 0, counts: &counts)
         }
+        print("Completed All Offsets.")
         counts[polymer.last!] = counts[polymer.last!, default: 0] + 1
         
         let maximum = counts.reduce(0) { partialResult, pair in
@@ -147,7 +149,6 @@ class PolymerExtruder: ObservableObject {
     }
     
     func depthFirstScore(polymer: [Character], depth: Int, counts: inout [Character: Int]) {
-        precondition(polymer.count == 2)
         guard depth < maxSteps,
               let insertion = rules[String(polymer)] else {
             // only count the first letter
