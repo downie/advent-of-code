@@ -36,9 +36,9 @@ class PolymerExtruder: ObservableObject {
     }
     
     @Published var output = ""
-    private let isDemo = true
-    private let isPartTwo = true
-    private let isMultithreaded = true
+    private let isDemo = false
+    private let isPartTwo = false
+    private let isDFS = true
     private var maxSteps: Int {
         isPartTwo ? 40 : 10
     }
@@ -68,8 +68,10 @@ class PolymerExtruder: ObservableObject {
     }
     
     func solve() {
-        if isPartTwo {
-            output = "::shrugs::"
+        if isDFS { // isPartTwo
+            // Expanding the string is a kind of bredth-first search. Let's do depth
+            let result = depthFirstScore(polymer: Array(polymer))
+            output = "\(result)"
         } else {
             var chars = Array(polymer)
             (0..<maxSteps).forEach { step in
@@ -123,6 +125,41 @@ class PolymerExtruder: ObservableObject {
             min(partialResult, pair.value)
         }
         return maximum - minimum
+    }
+    
+    func depthFirstScore(polymer: [Character]) -> Int {
+        var counts = [Character : Int]()
+        
+        for offset in 0..<polymer.count-1 {
+            let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
+            let pair = polymer[index...polymer.index(after: index)]
+            depthFirstScore(polymer: Array(pair), depth: 0, counts: &counts)
+        }
+        counts[polymer.last!] = counts[polymer.last!, default: 0] + 1
+        
+        let maximum = counts.reduce(0) { partialResult, pair in
+            max(partialResult, pair.value)
+        }
+        let minimum = counts.reduce(Int.max) { partialResult, pair in
+            min(partialResult, pair.value)
+        }
+        return maximum - minimum
+    }
+    
+    func depthFirstScore(polymer: [Character], depth: Int, counts: inout [Character: Int]) {
+        precondition(polymer.count == 2)
+        guard depth < maxSteps,
+              let insertion = rules[String(polymer)] else {
+            // only count the first letter
+            let letter = polymer.first!
+            counts[letter] = counts[letter, default: 0] + 1
+            return
+        }
+        let left = [polymer.first!, insertion]
+        depthFirstScore(polymer: left, depth: depth + 1, counts: &counts)
+        
+        let right = [insertion, polymer.last!]
+        depthFirstScore(polymer: right, depth: depth + 1, counts: &counts)
     }
 }
 
