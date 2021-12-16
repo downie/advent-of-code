@@ -53,7 +53,7 @@ class PacketAnalyzer {
         case .literal:
             return packet.version
         case .operatorWith(let packets):
-            return packets.map(sumVersions(of:)).reduce(0, +) + packet.version
+            return packets.map(sumVersions(of:)).reduce(packet.version, +)
         }
     }
 }
