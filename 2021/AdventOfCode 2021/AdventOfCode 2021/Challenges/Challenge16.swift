@@ -9,10 +9,12 @@ import SwiftUI
 
 class BitTwiddler: ObservableObject {
     @Published var output = ""
-    private let isPartTwo = false
+    
+    private let isPartTwo: Bool
     private let input: String
     
-    init(demoInput: String? = nil) {
+    init(demoInput: String? = nil, isPartTwo: Bool = false) {
+        self.isPartTwo = isPartTwo
         if let demoInput = demoInput {
             input = demoInput
                 .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -25,8 +27,13 @@ class BitTwiddler: ObservableObject {
     
     func solve() {
         let packet = try! PacketDecoder().decode(hexadecimalString: input)
-        let result = PacketAnalyzer().sumVersions(of: packet)
-        output = "\(result)"
+        if isPartTwo {
+            let result = PacketAnalyzer().evaluate(packet: packet)
+            output = "\(result)"
+        } else {
+            let result = PacketAnalyzer().sumVersions(of: packet)
+            output = "\(result)"
+        }
     }
 }
 
@@ -172,6 +179,10 @@ class PacketAnalyzer {
         case .operatorWith(let packets):
             return packets.map(sumVersions(of:)).reduce(packet.version, +)
         }
+    }
+    
+    func evaluate(packet: Packet) -> Int {
+        0
     }
 }
 
