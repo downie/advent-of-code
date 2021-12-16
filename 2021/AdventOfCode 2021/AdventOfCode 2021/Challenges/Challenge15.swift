@@ -63,6 +63,7 @@ struct Challenge15: View {
         .frame(minWidth: 200)
     }
 }
+
 struct Challenge15_Previews: PreviewProvider {
     static var previews: some View {
         Challenge15()
