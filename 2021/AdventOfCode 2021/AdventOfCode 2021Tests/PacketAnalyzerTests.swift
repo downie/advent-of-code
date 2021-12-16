@@ -12,9 +12,9 @@ class PacketAnalyzerTests: XCTestCase {
     let analyzer = PacketAnalyzer()
     
     func testDeepNestedOperatorPackets() throws {
-        let input = Packet(version: 4, type: .operatorWith(packets: [
-            Packet(version: 1, type: .operatorWith(packets: [
-                Packet(version: 5, type: .operatorWith(packets: [
+        let input = Packet(version: 4, type: .sum(packets: [
+            Packet(version: 1, type: .sum(packets: [
+                Packet(version: 5, type: .sum(packets: [
                     Packet(version: 6, type: .literal(value: 100)) // 100 is a guess here.
                 ]))
             ]))

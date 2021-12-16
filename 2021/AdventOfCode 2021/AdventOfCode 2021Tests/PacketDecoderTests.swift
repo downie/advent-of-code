@@ -23,7 +23,7 @@ class PacketDecoderTests: XCTestCase {
     
     func testOperatorValueWithFixedBitLengthOfSubPackets() throws {
         let packet = try decoder.decode(hexadecimalString: "38006F45291200")
-        let expected = Packet(version: 1, type: .operatorWith(packets: [
+        let expected = Packet(version: 1, type: .lessThan(packets: [
             Packet(version: 6, type: .literal(value: 10)),
             Packet(version: 2, type: .literal(value: 20))
         ]))
@@ -32,7 +32,7 @@ class PacketDecoderTests: XCTestCase {
     
     func testOperatorValueWithFixedNumberOfSubPackets() throws {
         let packet = try decoder.decode(hexadecimalString: "EE00D40C823060")
-        let expected = Packet(version: 7, type: .operatorWith(packets: [
+        let expected = Packet(version: 7, type: .maximum(packets: [
             Packet(version: 2, type: .literal(value: 1)),
             Packet(version: 4, type: .literal(value: 2)),
             Packet(version: 1, type: .literal(value: 3)),

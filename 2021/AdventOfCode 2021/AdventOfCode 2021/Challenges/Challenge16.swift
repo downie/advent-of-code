@@ -40,7 +40,13 @@ class BitTwiddler: ObservableObject {
 struct Packet: Equatable, Hashable {
     enum PacketType: Equatable, Hashable {
         case literal(value: Int)
-        case operatorWith(packets: [Packet])
+        case sum(packets: [Packet])
+        case product(packets: [Packet])
+        case minimum(packets: [Packet])
+        case maximum(packets: [Packet])
+        case greaterThan(packets: [Packet])
+        case lessThan(packets: [Packet])
+        case equalTo(packets: [Packet])
     }
     let version: Int
     let type: PacketType
@@ -101,17 +107,44 @@ struct BitStream {
 }
 
 class PacketDecoder {
-    enum Error: Swift.Error {
-        case notImplemented
-    }
     func decode(hexadecimalString: String) throws -> Packet {
         var bitStream = BitStream(bits: bits(from: hexadecimalString))
         return try decodeNextPacket(from: &bitStream)
     }
+
+    fileprivate func decodeVariablePackets(from bitStream: inout BitStream) throws -> [Packet] {
+        let subPackets: [Packet]
+        let isPacketBitLengthBased = bitStream.read(bits: 1) == 0
+        if isPacketBitLengthBased {
+            var packetsSoFar = [Packet]()
+            let targetBitCount = bitStream.read(bits: 15)
+            let startingCursor = bitStream.cursor
+            while bitStream.cursor.distance(from: startingCursor) < targetBitCount {
+                packetsSoFar.append(try decodeNextPacket(from: &bitStream))
+            }
+            
+            subPackets = packetsSoFar
+        } else {
+            let numberOfSubPackets = bitStream.read(bits: 11)
+            subPackets = try (0..<numberOfSubPackets).map { _ in
+                try decodeNextPacket(from: &bitStream)
+            }
+        }
+        return subPackets
+    }
+    
     func decodeNextPacket(from bitStream: inout BitStream) throws -> Packet {
         let version = bitStream.read(bits: 3)
         let typeValue = bitStream.read(bits: 3)
         switch typeValue {
+        case 0:
+            return Packet(version: version, type: .sum(packets: try decodeVariablePackets(from: &bitStream)))
+        case 1:
+            return Packet(version: version, type: .product(packets: try decodeVariablePackets(from: &bitStream)))
+        case 2:
+            return Packet(version: version, type: .minimum(packets: try decodeVariablePackets(from: &bitStream)))
+        case 3:
+            return Packet(version: version, type: .maximum(packets: try decodeVariablePackets(from: &bitStream)))
         case 4: // literal value
             var value: Int = 0
             var lastFiveBits = 0
@@ -121,27 +154,18 @@ class PacketDecoder {
                 value = value | (lastFiveBits & 0xF)
             } while (lastFiveBits & 0x10) == 0x10
             return Packet(version: version, type: .literal(value: value))
+        case 5:
+            return Packet(version: version, type: .greaterThan(packets: try decodeVariablePackets(from: &bitStream)))
+        case 6:
+            return Packet(version: version, type: .lessThan(packets: try decodeVariablePackets(from: &bitStream)))
+        case 7:
+            return Packet(version: version, type: .equalTo(packets: try decodeVariablePackets(from: &bitStream)))
         default:
-            let subPackets: [Packet]
-            let isPacketBitLengthBased = bitStream.read(bits: 1) == 0
-            if isPacketBitLengthBased {
-                var packetsSoFar = [Packet]()
-                let targetBitCount = bitStream.read(bits: 15)
-                let startingCursor = bitStream.cursor
-                while bitStream.cursor.distance(from: startingCursor) < targetBitCount {
-                    packetsSoFar.append(try decodeNextPacket(from: &bitStream))
-                }
-
-                subPackets = packetsSoFar
-            } else {
-                let numberOfSubPackets = bitStream.read(bits: 11)
-                subPackets = try (0..<numberOfSubPackets).map { _ in
-                    try decodeNextPacket(from: &bitStream)
-                }
-            }
-            return Packet(version: version, type: .operatorWith(packets: subPackets))
+            fatalError()
         }
     }
+    
+
     
     func bits(from hexadecimalString: String) -> [UInt64] {
         let chunkSize = 64 / 4 // 64 bits, with 4 bits per character
@@ -176,7 +200,13 @@ class PacketAnalyzer {
         switch packet.type {
         case .literal:
             return packet.version
-        case .operatorWith(let packets):
+        case .sum(let packets),
+                .product(let packets),
+                .maximum(let packets),
+                .minimum(let packets),
+                .lessThan(let packets),
+                .greaterThan(let packets),
+                .equalTo(let packets):
             return packets.map(sumVersions(of:)).reduce(packet.version, +)
         }
     }
