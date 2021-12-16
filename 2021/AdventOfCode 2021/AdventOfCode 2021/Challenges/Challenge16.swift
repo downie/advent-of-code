@@ -37,13 +37,68 @@ struct Packet: Equatable, Hashable {
     let type: PacketType
 }
 
+struct BitStream {
+    private let allBits: [UInt64]
+    private let chunkSize = 64 // bits
+    var chunkIndex = 0
+    var bitIndex = 0
+    
+    init(bits: [UInt64]) {
+        allBits = bits
+    }
+    
+    mutating func read(bits: Int) -> Int {
+        precondition(bits < 64)
+        var result: UInt64 = 0
+        var bitsRead = 0
+        while bitsRead < bits {
+            let shiftAmount = (chunkSize - 1 - bitIndex)
+            let mask: UInt64 = 0x01 << shiftAmount
+            let nextBit: UInt64
+            if chunkIndex <= allBits.count {
+                nextBit = (allBits[chunkIndex] & mask) >> shiftAmount
+            } else {
+                // Read past the end? All you get are 0s.
+                nextBit = 0
+            }
+            result = result << 1
+            result = result | nextBit
+            
+            bitsRead += 1
+            
+            bitIndex += 1
+            if bitIndex >= chunkSize {
+                bitIndex = 0
+                chunkIndex += 1
+            }
+        }
+        
+        return Int(result)
+    }
+}
+
 class PacketDecoder {
     enum Error: Swift.Error {
         case notImplemented
     }
     
     func decode(hexadecimalString: String) throws -> Packet {
-        throw Error.notImplemented
+        var bitStream = BitStream(bits: bits(from: hexadecimalString))
+        let version = bitStream.read(bits: 3)
+        let typeValue = bitStream.read(bits: 3)
+        switch typeValue {
+        case 4: // literal value
+            var value: Int = 0
+            var lastFiveBits = 0
+            repeat {
+                lastFiveBits = bitStream.read(bits: 5)
+                value = value << 4
+                value = value | (lastFiveBits & 0xF)
+            } while (lastFiveBits & 0x10) == 0x10
+            return Packet(version: version, type: .literal(value: value))
+        default:
+            throw Error.notImplemented
+        }
     }
     
     func bits(from hexadecimalString: String) -> [UInt64] {
