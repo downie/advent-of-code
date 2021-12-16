@@ -45,6 +45,33 @@ class PacketDecoder {
     func decode(hexadecimalString: String) throws -> Packet {
         throw Error.notImplemented
     }
+    
+    func bits(from hexadecimalString: String) -> [UInt64] {
+        let chunkSize = 64 / 4 // 64 bits, with 4 bits per character
+
+        let strings = stride(from: 0, to: hexadecimalString.count, by: chunkSize).map { offset -> Substring in
+            let startIndex = hexadecimalString.index(hexadecimalString.startIndex, offsetBy: offset)
+            let endIndex = hexadecimalString.index(startIndex, offsetBy: chunkSize, limitedBy: hexadecimalString.endIndex) ?? hexadecimalString.endIndex
+            return hexadecimalString[startIndex..<endIndex]
+        }
+        let bitArray = strings.map { string -> UInt64 in
+            var result: UInt64 = 0
+            for bit in 0..<chunkSize {
+                let smallInt: UInt64
+                
+                if let index = string.index(string.startIndex, offsetBy: bit, limitedBy: string.index(before: string.endIndex)) {
+                    let char = string[index...index]
+                    smallInt = UInt64(char, radix: 16)!
+                } else {
+                    smallInt = 0
+                }
+                result = result << 4
+                result = result | smallInt
+            }
+            return result
+        }
+        return bitArray
+    }
 }
 
 class PacketAnalyzer {

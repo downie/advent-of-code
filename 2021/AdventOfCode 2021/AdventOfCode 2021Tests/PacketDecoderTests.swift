@@ -40,4 +40,15 @@ class PacketDecoderTests: XCTestCase {
         XCTAssertEqual(packet, expected)
     }
     
+    // MARK: - Bit chunking tests
+    
+    func testSmallNumbersAreIdenticalToIntParsing() throws {
+        let result = decoder.bits(from: "D2FE28")
+        let expected = [
+            UInt64(0xD2FE2800_00000000)
+        ]
+        print(String(expected.first!, radix: 2))
+        print(String(result.first!, radix: 2))
+        XCTAssertEqual(result, expected)
+    }
 }
