@@ -237,7 +237,7 @@ class PacketAnalyzer {
 }
 
 struct Challenge16: View {
-    @StateObject var state = BitTwiddler()
+    @StateObject var state = BitTwiddler(isPartTwo: true)
     let pasteboard = NSPasteboard.general
     
     var body: some View {
