@@ -47,6 +47,12 @@ class PacketDecoder {
     }
 }
 
+class PacketAnalyzer {
+    func sumVersions(of packet: Packet) -> Int {
+        0
+    }
+}
+
 struct Challenge16: View {
     @StateObject var state = BitTwiddler()
     let pasteboard = NSPasteboard.general

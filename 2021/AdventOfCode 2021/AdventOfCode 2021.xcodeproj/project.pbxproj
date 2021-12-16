@@ -20,7 +20,6 @@
 		83391515275D070600FB6B1D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83391514275D070600FB6B1D /* ContentView.swift */; };
 		83391517275D070B00FB6B1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83391516275D070B00FB6B1D /* Assets.xcassets */; };
 		8339151A275D070B00FB6B1D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83391519275D070B00FB6B1D /* Preview Assets.xcassets */; };
-		83391525275D070B00FB6B1D /* AdventOfCode_2021Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83391524275D070B00FB6B1D /* AdventOfCode_2021Tests.swift */; };
 		8339152F275D070B00FB6B1D /* AdventOfCode_2021UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8339152E275D070B00FB6B1D /* AdventOfCode_2021UITests.swift */; };
 		83391531275D070B00FB6B1D /* AdventOfCode_2021UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83391530275D070B00FB6B1D /* AdventOfCode_2021UITestsLaunchTests.swift */; };
 		8339153F275D07F900FB6B1D /* Challenge05.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8339153E275D07F900FB6B1D /* Challenge05.swift */; };
@@ -36,6 +35,8 @@
 		83ACE625276ACADC008ADE49 /* Challenge24.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE624276ACADC008ADE49 /* Challenge24.swift */; };
 		83ACE627276ACAE7008ADE49 /* Challenge25.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE626276ACAE7008ADE49 /* Challenge25.swift */; };
 		83ACE629276B77B1008ADE49 /* PacketDecoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE628276B77B1008ADE49 /* PacketDecoderTests.swift */; };
+		83ACE62B276B7C3F008ADE49 /* PacketAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */; };
+		83ACE62D276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,7 +73,6 @@
 		83391519275D070B00FB6B1D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8339151B275D070B00FB6B1D /* AdventOfCode_2021.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AdventOfCode_2021.entitlements; sourceTree = "<group>"; };
 		83391520275D070B00FB6B1D /* AdventOfCode 2021Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AdventOfCode 2021Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		83391524275D070B00FB6B1D /* AdventOfCode_2021Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventOfCode_2021Tests.swift; sourceTree = "<group>"; };
 		8339152A275D070B00FB6B1D /* AdventOfCode 2021UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "AdventOfCode 2021UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8339152E275D070B00FB6B1D /* AdventOfCode_2021UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventOfCode_2021UITests.swift; sourceTree = "<group>"; };
 		83391530275D070B00FB6B1D /* AdventOfCode_2021UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventOfCode_2021UITestsLaunchTests.swift; sourceTree = "<group>"; };
@@ -89,6 +89,8 @@
 		83ACE624276ACADC008ADE49 /* Challenge24.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge24.swift; sourceTree = "<group>"; };
 		83ACE626276ACAE7008ADE49 /* Challenge25.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge25.swift; sourceTree = "<group>"; };
 		83ACE628276B77B1008ADE49 /* PacketDecoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketDecoderTests.swift; sourceTree = "<group>"; };
+		83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketAnalyzerTests.swift; sourceTree = "<group>"; };
+		83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketDecodeAndAnalyzeTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,8 +162,9 @@
 		83391523275D070B00FB6B1D /* AdventOfCode 2021Tests */ = {
 			isa = PBXGroup;
 			children = (
-				83391524275D070B00FB6B1D /* AdventOfCode_2021Tests.swift */,
 				83ACE628276B77B1008ADE49 /* PacketDecoderTests.swift */,
+				83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */,
+				83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */,
 			);
 			path = "AdventOfCode 2021Tests";
 			sourceTree = "<group>";
@@ -364,7 +367,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				83ACE629276B77B1008ADE49 /* PacketDecoderTests.swift in Sources */,
-				83391525275D070B00FB6B1D /* AdventOfCode_2021Tests.swift in Sources */,
+				83ACE62D276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift in Sources */,
+				83ACE62B276B7C3F008ADE49 /* PacketAnalyzerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
