@@ -24,6 +24,7 @@
 		8339152F275D070B00FB6B1D /* AdventOfCode_2021UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8339152E275D070B00FB6B1D /* AdventOfCode_2021UITests.swift */; };
 		83391531275D070B00FB6B1D /* AdventOfCode_2021UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83391530275D070B00FB6B1D /* AdventOfCode_2021UITestsLaunchTests.swift */; };
 		8339153F275D07F900FB6B1D /* Challenge05.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8339153E275D07F900FB6B1D /* Challenge05.swift */; };
+		83ACE613276AC883008ADE49 /* Challenge15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE612276AC883008ADE49 /* Challenge15.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 		8339152E275D070B00FB6B1D /* AdventOfCode_2021UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventOfCode_2021UITests.swift; sourceTree = "<group>"; };
 		83391530275D070B00FB6B1D /* AdventOfCode_2021UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdventOfCode_2021UITestsLaunchTests.swift; sourceTree = "<group>"; };
 		8339153E275D07F900FB6B1D /* Challenge05.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge05.swift; sourceTree = "<group>"; };
+		83ACE612276AC883008ADE49 /* Challenge15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge15.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,6 +165,7 @@
 				83195F6C27663F460054CA69 /* Challenge12.swift */,
 				83195F6E2767A3F00054CA69 /* Challenge13.swift */,
 				83195F702768CA440054CA69 /* Challenge14.swift */,
+				83ACE612276AC883008ADE49 /* Challenge15.swift */,
 			);
 			path = Challenges;
 			sourceTree = "<group>";
@@ -300,6 +303,7 @@
 				83195F6927639D030054CA69 /* Challenge10.swift in Sources */,
 				83195F63275FA5CA0054CA69 /* Challenge07.swift in Sources */,
 				83195F6D27663F460054CA69 /* Challenge12.swift in Sources */,
+				83ACE613276AC883008ADE49 /* Challenge15.swift in Sources */,
 				83195F65276107280054CA69 /* Challenge08.swift in Sources */,
 				83391515275D070600FB6B1D /* ContentView.swift in Sources */,
 				83195F67276251960054CA69 /* Challenge09.swift in Sources */,
