@@ -26,6 +26,16 @@ class PathFinder: ObservableObject {
     private let isDemo = true
     private let isPartTwo = false
     
+    let maxX: Int
+    let maxY: Int
+    
+    let riskMap: [Point: Int]
+    
+    struct RiskTotal: Equatable, Hashable {
+        let risk: Int
+        let from: Point
+    }
+
     init() {
         let input: String
         if isDemo {
@@ -34,11 +44,72 @@ class PathFinder: ObservableObject {
             let inputData = NSDataAsset(name: "15")!.data
             input = String(data: inputData, encoding: .utf8)!
         }
-        print(input)
+        
+        let lines = input.trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .newlines)
+        maxX = lines.first!.count
+        maxY = lines.count
+        
+        riskMap = lines.enumerated().reduce(into: [Point: Int]()) { partialResult, pair in
+            let y = pair.offset
+            let line = pair.element
+            partialResult = line.enumerated().reduce(into: partialResult) { partialResult, innerPair in
+                let x = innerPair.offset
+                let risk = Int(String(innerPair.element))!
+                partialResult[Point(x: x, y: y)] = risk
+            }
+        }
     }
     
     func solve() {
-        output = "Fake"
+        let start = Point(x: 0, y: 0)
+        let end = Point(x: maxX, y: maxY)
+        var accumulatedRisk = [Point: RiskTotal]()
+        accumulatedRisk[start] = RiskTotal(risk: 0, from: start)
+        
+        var edgePoints = Set<Point>([Point(x: 1, y: 0), Point(x: 0, y: 1)])
+        var currentPoint = start
+        var nextPoint = start
+        
+        while currentPoint != end {
+            // The next point to expand is the lowest risk one. If there are multiple. chose the one closer to the exit.
+            nextPoint = edgePoints.sorted { left, right in
+                let leftRisk = riskMap[left, default: Int.max]
+                let rightRisk = riskMap[right, default: Int.max]
+                if leftRisk == rightRisk {
+                    return manhattanDistance(from: left, to: end) < manhattanDistance(from: right, to: end)
+                } else {
+                    return leftRisk < rightRisk
+                }
+            }.first!
+            edgePoints.remove(nextPoint)
+            
+            // Calculate and save the total risk to the next point
+            let currentRisk = accumulatedRisk[currentPoint]!.risk
+            
+            let nextRisk = riskMap[nextPoint, default: Int.max]
+            accumulatedRisk[nextPoint] = RiskTotal(risk: currentRisk + nextRisk, from: currentPoint)
+
+            let newPoints = nextPoint.adjacentPoints(includingDiagonals: false).filter { point in
+                point.x >= maxX && point.y >= maxY && !accumulatedRisk.keys.contains(point)
+            }
+            edgePoints = edgePoints.union(newPoints)
+            
+            currentPoint = edgePoints.sorted { left, right in
+                let leftRisk = riskMap[left, default: Int.max]
+                let rightRisk = riskMap[right, default: Int.max]
+                if leftRisk == rightRisk {
+                    return manhattanDistance(from: left, to: end) < manhattanDistance(from: right, to: end)
+                } else {
+                    return leftRisk < rightRisk
+                }
+            }.first!
+        }
+        
+    }
+    
+    func manhattanDistance(from: Point, to: Point) -> Int {
+        abs(from.x - to.x) + abs(from.y - to.y)
     }
 }
 
