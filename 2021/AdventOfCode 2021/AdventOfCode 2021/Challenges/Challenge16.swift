@@ -212,7 +212,27 @@ class PacketAnalyzer {
     }
     
     func evaluate(packet: Packet) -> Int {
-        0
+        switch packet.type {
+        case .literal(let value):
+            return value
+        case .sum(packets: let packets):
+            return packets.map(evaluate(packet:)).reduce(0, +)
+        case .product(let packets):
+            return packets.map(evaluate(packet:)).reduce(1, *)
+        case .minimum(let packets):
+            return packets.map(evaluate(packet:)).reduce(Int.max, min)
+        case .maximum(let packets):
+            return packets.map(evaluate(packet:)).reduce(0, max)
+        case .greaterThan(let packets):
+            assert(packets.count == 2)
+            return evaluate(packet: packets[0]) > evaluate(packet: packets[1]) ? 1 : 0
+        case .lessThan(let packets):
+            assert(packets.count == 2)
+            return evaluate(packet: packets[0]) < evaluate(packet: packets[1]) ? 1 : 0
+        case .equalTo(let packets):
+            assert(packets.count == 2)
+            return evaluate(packet: packets[0]) == evaluate(packet: packets[1]) ? 1 : 0
+        }
     }
 }
 

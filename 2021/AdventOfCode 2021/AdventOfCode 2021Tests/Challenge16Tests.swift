@@ -39,49 +39,49 @@ class Challenge16Tests: XCTestCase {
     // MARK: - Part Two
     
     func testDemo0Part2Sum() throws {
-        let solver = BitTwiddler(demoInput: "C200B40A82")
+        let solver = BitTwiddler(demoInput: "C200B40A82", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "3")
     }
 
     func testDemo1Part2Product() throws {
-        let solver = BitTwiddler(demoInput: "04005AC33890")
+        let solver = BitTwiddler(demoInput: "04005AC33890", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "54")
     }
     
     func testDemo2Part2Minimum() throws {
-        let solver = BitTwiddler(demoInput: "880086C3E88112")
+        let solver = BitTwiddler(demoInput: "880086C3E88112", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "7")
     }
     
     func testDemo3Part2Maximum() throws {
-        let solver = BitTwiddler(demoInput: "CE00C43D881120")
+        let solver = BitTwiddler(demoInput: "CE00C43D881120", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "9")
     }
     
     func testDemoLessThanOperation() throws {
-        let solver = BitTwiddler(demoInput: "D8005AC2A8F0")
+        let solver = BitTwiddler(demoInput: "D8005AC2A8F0", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "1")
     }
     
     func testDemoGreaterThanOperation() throws {
-        let solver = BitTwiddler(demoInput: "F600BC2D8F")
+        let solver = BitTwiddler(demoInput: "F600BC2D8F", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "0")
     }
     
     func testDemoNotEqualToOperation() throws {
-        let solver = BitTwiddler(demoInput: "9C005AC2F8F0")
+        let solver = BitTwiddler(demoInput: "9C005AC2F8F0", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "0")
     }
     
     func testDemoComplicatedEqualityOperation() throws {
-        let solver = BitTwiddler(demoInput: "9C0141080250320F1802104A08")
+        let solver = BitTwiddler(demoInput: "9C0141080250320F1802104A08", isPartTwo: true)
         solver.solve()
         XCTAssertEqual(solver.output, "1")
     }
