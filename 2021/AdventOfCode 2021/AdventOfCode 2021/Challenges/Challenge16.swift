@@ -9,22 +9,24 @@ import SwiftUI
 
 class BitTwiddler: ObservableObject {
     @Published var output = ""
-    private let isDemo = true
     private let isPartTwo = false
+    private let input: String
     
-    init() {
-        let input: String
-        if isDemo {
-            input = "demoInput"
+    init(demoInput: String? = nil) {
+        if let demoInput = demoInput {
+            input = demoInput
+                .trimmingCharacters(in: .whitespacesAndNewlines)
         } else {
             let inputData = NSDataAsset(name: "16")!.data
             input = String(data: inputData, encoding: .utf8)!
+                .trimmingCharacters(in: .whitespacesAndNewlines)
         }
-        print(input)
     }
     
     func solve() {
-        output = "Fake"
+        let packet = try! PacketDecoder().decode(hexadecimalString: input)
+        let result = PacketAnalyzer().sumVersions(of: packet)
+        output = "\(result)"
     }
 }
 

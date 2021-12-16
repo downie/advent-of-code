@@ -38,6 +38,7 @@
 		83ACE62B276B7C3F008ADE49 /* PacketAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */; };
 		83ACE62D276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */; };
 		83F34124276B9658008DCF02 /* BitStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F34123276B9658008DCF02 /* BitStreamTests.swift */; };
+		83F34126276BBEFD008DCF02 /* Challenge16Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F34125276BBEFD008DCF02 /* Challenge16Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,7 @@
 		83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketAnalyzerTests.swift; sourceTree = "<group>"; };
 		83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketDecodeAndAnalyzeTests.swift; sourceTree = "<group>"; };
 		83F34123276B9658008DCF02 /* BitStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitStreamTests.swift; sourceTree = "<group>"; };
+		83F34125276BBEFD008DCF02 /* Challenge16Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge16Tests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -168,6 +170,7 @@
 				83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */,
 				83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */,
 				83F34123276B9658008DCF02 /* BitStreamTests.swift */,
+				83F34125276BBEFD008DCF02 /* Challenge16Tests.swift */,
 			);
 			path = "AdventOfCode 2021Tests";
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 				83ACE629276B77B1008ADE49 /* PacketDecoderTests.swift in Sources */,
 				83F34124276B9658008DCF02 /* BitStreamTests.swift in Sources */,
 				83ACE62D276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift in Sources */,
+				83F34126276BBEFD008DCF02 /* Challenge16Tests.swift in Sources */,
 				83ACE62B276B7C3F008ADE49 /* PacketAnalyzerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
