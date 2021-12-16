@@ -81,9 +81,11 @@ class PacketDecoder {
     enum Error: Swift.Error {
         case notImplemented
     }
-    
     func decode(hexadecimalString: String) throws -> Packet {
         var bitStream = BitStream(bits: bits(from: hexadecimalString))
+        return try decodeNextPacket(from: &bitStream)
+    }
+    func decodeNextPacket(from bitStream: inout BitStream) throws -> Packet {
         let version = bitStream.read(bits: 3)
         let typeValue = bitStream.read(bits: 3)
         switch typeValue {
@@ -97,7 +99,20 @@ class PacketDecoder {
             } while (lastFiveBits & 0x10) == 0x10
             return Packet(version: version, type: .literal(value: value))
         default:
-            throw Error.notImplemented
+            let subPackets: [Packet]
+            let isPacketBitLengthBased = bitStream.read(bits: 1) == 0
+            if isPacketBitLengthBased {
+                var packetsFound = 0
+                let targteBitCount = bitStream.read(bits: 15)
+                // TODO: how do I limit bit counts?
+                throw Error.notImplemented
+            } else {
+                let numberOfSubPackets = bitStream.read(bits: 11)
+                subPackets = try (0..<numberOfSubPackets).map { _ in
+                    try decodeNextPacket(from: &bitStream)
+                }
+            }
+            return Packet(version: version, type: .operatorWith(packets: subPackets))
         }
     }
     
