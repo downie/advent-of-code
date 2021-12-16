@@ -7,8 +7,48 @@
 
 import SwiftUI
 
+class BitTwiddler: ObservableObject {
+    @Published var output = ""
+    private let isDemo = true
+    private let isPartTwo = false
+    
+    init() {
+        let input: String
+        if isDemo {
+            input = "demoInput"
+        } else {
+            let inputData = NSDataAsset(name: "16")!.data
+            input = String(data: inputData, encoding: .utf8)!
+        }
+        print(input)
+    }
+    
+    func solve() {
+        output = "Fake"
+    }
+}
+
+struct Packet: Equatable, Hashable {
+    enum PacketType: Equatable, Hashable {
+        case literal(value: Int)
+        case operatorWith(packets: [Packet])
+    }
+    let version: Int
+    let type: PacketType
+}
+
+class PacketDecoder {
+    enum Error: Swift.Error {
+        case notImplemented
+    }
+    
+    func decode(hexadecimalString: String) throws -> Packet {
+        throw Error.notImplemented
+    }
+}
+
 struct Challenge16: View {
-    @StateObject var state = DummyChallenge()
+    @StateObject var state = BitTwiddler()
     let pasteboard = NSPasteboard.general
     
     var body: some View {
