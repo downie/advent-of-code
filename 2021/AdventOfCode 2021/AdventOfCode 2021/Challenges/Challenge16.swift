@@ -55,7 +55,7 @@ struct BitStream {
             let shiftAmount = (chunkSize - 1 - bitIndex)
             let mask: UInt64 = 0x01 << shiftAmount
             let nextBit: UInt64
-            if chunkIndex <= allBits.count {
+            if chunkIndex < allBits.count {
                 nextBit = (allBits[chunkIndex] & mask) >> shiftAmount
             } else {
                 // Read past the end? All you get are 0s.
