@@ -49,7 +49,12 @@ class PacketDecoder {
 
 class PacketAnalyzer {
     func sumVersions(of packet: Packet) -> Int {
-        0
+        switch packet.type {
+        case .literal:
+            return packet.version
+        case .operatorWith(let packets):
+            return packets.map(sumVersions(of:)).reduce(0, +) + packet.version
+        }
     }
 }
 
