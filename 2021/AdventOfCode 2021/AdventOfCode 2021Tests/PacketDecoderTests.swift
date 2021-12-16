@@ -24,7 +24,7 @@ class PacketDecoderTests: XCTestCase {
     func testOperatorValueWithFixedBitLengthOfSubPackets() throws {
         let packet = try decoder.decode(hexadecimalString: "38006F45291200")
         let expected = Packet(version: 1, type: .operatorWith(packets: [
-            Packet(version: 7, type: .literal(value: 10)), // I'm pretty sure these versions are right
+            Packet(version: 6, type: .literal(value: 10)),
             Packet(version: 2, type: .literal(value: 20))
         ]))
         XCTAssertEqual(packet, expected)

@@ -37,9 +37,19 @@ struct Packet: Equatable, Hashable {
     let type: PacketType
 }
 
+
 struct BitStream {
+    struct Cursor {
+        let chunkIndex: Int
+        let bitIndex: Int
+        
+        func distance(from otherCursor: Cursor) -> Int {
+            abs((BitStream.chunkSize * chunkIndex + bitIndex) - (BitStream.chunkSize * otherCursor.chunkIndex + otherCursor.bitIndex))
+        }
+    }
+    
     private let allBits: [UInt64]
-    private let chunkSize = 64 // bits
+    private static let chunkSize = 64 // bits
     var chunkIndex = 0
     var bitIndex = 0
     
@@ -47,12 +57,16 @@ struct BitStream {
         allBits = bits
     }
     
+    var cursor: Cursor {
+        Cursor(chunkIndex: chunkIndex, bitIndex: bitIndex)
+    }
+    
     mutating func read(bits: Int) -> Int {
         precondition(bits < 64)
         var result: UInt64 = 0
         var bitsRead = 0
         while bitsRead < bits {
-            let shiftAmount = (chunkSize - 1 - bitIndex)
+            let shiftAmount = (Self.chunkSize - 1 - bitIndex)
             let mask: UInt64 = 0x01 << shiftAmount
             let nextBit: UInt64
             if chunkIndex < allBits.count {
@@ -67,7 +81,7 @@ struct BitStream {
             bitsRead += 1
             
             bitIndex += 1
-            if bitIndex >= chunkSize {
+            if bitIndex >= Self.chunkSize {
                 bitIndex = 0
                 chunkIndex += 1
             }
@@ -102,10 +116,14 @@ class PacketDecoder {
             let subPackets: [Packet]
             let isPacketBitLengthBased = bitStream.read(bits: 1) == 0
             if isPacketBitLengthBased {
-                var packetsFound = 0
-                let targteBitCount = bitStream.read(bits: 15)
-                // TODO: how do I limit bit counts?
-                throw Error.notImplemented
+                var packetsSoFar = [Packet]()
+                let targetBitCount = bitStream.read(bits: 15)
+                let startingCursor = bitStream.cursor
+                while bitStream.cursor.distance(from: startingCursor) < targetBitCount {
+                    packetsSoFar.append(try decodeNextPacket(from: &bitStream))
+                }
+
+                subPackets = packetsSoFar
             } else {
                 let numberOfSubPackets = bitStream.read(bits: 11)
                 subPackets = try (0..<numberOfSubPackets).map { _ in
