@@ -30,7 +30,7 @@ class DummyChallenge: ObservableObject {
 
 struct ContentView: View {
     var body: some View {
-        Challenge16()
+        Challenge15()
             .padding()
     }
 }
