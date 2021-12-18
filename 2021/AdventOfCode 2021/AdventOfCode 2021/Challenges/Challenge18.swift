@@ -30,9 +30,33 @@ class SnailfishSolver: ObservableObject {
     }
 }
 
-indirect enum SnailfishNumber: Equatable, Hashable {
-    case value(_: Int)
-    case pair(left: SnailfishNumber, right: SnailfishNumber)
+class SnailfishNumber: Equatable {
+    static func == (lhs: SnailfishNumber, rhs: SnailfishNumber) -> Bool {
+        lhs.value == rhs.value && lhs.left == rhs.left && lhs.right == rhs.right
+    }
+    
+    let value: Int?
+    let left: SnailfishNumber?
+    let right: SnailfishNumber?
+    
+    init(_ value: Int) {
+        self.value = value
+        self.left = nil
+        self.right = nil
+    }
+    
+    static func value(_ value: Int) -> SnailfishNumber {
+        .init(value)
+    }
+    
+    init(left: SnailfishNumber, right: SnailfishNumber)  {
+        self.value = nil
+        self.left = left
+        self.right = right
+    }
+    static func pair(left: SnailfishNumber, right: SnailfishNumber) -> SnailfishNumber {
+        .init(left: left, right: right)
+    }
     
     static func from(string: String) -> SnailfishNumber {
         if let number = Int(string, radix: 10) {
@@ -72,10 +96,7 @@ indirect enum SnailfishNumber: Equatable, Hashable {
         guard depth < 4 else {
             return number
         }
-        switch number {
-        case .value:
-             return nil
-        case .pair(let left, let right):
+        if let left = number.left, let right = number.right {
             if let match = firstOverlyNestedNumber(in: left, depth: depth + 1) {
                 return match
             } else if let match = firstOverlyNestedNumber(in: right, depth: depth + 1) {
