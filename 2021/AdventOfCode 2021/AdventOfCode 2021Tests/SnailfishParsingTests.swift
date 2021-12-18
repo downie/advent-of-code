@@ -86,7 +86,7 @@ class SnailfishNumberAdditionTests: XCTestCase {
         let right = SnailfishNumber.pair(left: .pair(left: .value(3), right: .value(4)), right: .value(5))
         let result = left + right
         let expected = SnailfishNumber.pair(
-            left: .pair(left: .value(1), right: .value(1)),
+            left: .pair(left: .value(1), right: .value(2)),
             right: .pair(left: .pair(left: .value(3), right: .value(4)), right: .value(5))
         )
         XCTAssertEqual(result, expected)

@@ -65,7 +65,7 @@ indirect enum SnailfishNumber: Equatable, Hashable {
     }
     
     public static func +(lhs: SnailfishNumber, rhs: SnailfishNumber) -> SnailfishNumber {
-        lhs
+        .pair(left: lhs, right: rhs)
     }
 }
 
