@@ -8,9 +8,8 @@
 import XCTest
 @testable import AdventOfCode_2021
 
-class SnailfishNumberTests: XCTestCase {
-
-    // MARK: - Parsing
+// MARK: - Parsing
+class SnailfishParsingTests: XCTestCase {
     
     func testParsingSimplePair() throws {
         let result = SnailfishNumber.from(string: "[1,2]")
@@ -75,6 +74,20 @@ class SnailfishNumberTests: XCTestCase {
                     right: .pair(left: .value(7), right: .value(3))
                 )
             )
+        )
+        XCTAssertEqual(result, expected)
+    }
+}
+
+// MARK: - Addition
+class SnailfishNumberAdditionTests: XCTestCase {
+    func testAdditionWithoutAnyReduction() {
+        let left = SnailfishNumber.pair(left: .value(1), right: .value(2))
+        let right = SnailfishNumber.pair(left: .pair(left: .value(3), right: .value(4)), right: .value(5))
+        let result = left + right
+        let expected = SnailfishNumber.pair(
+            left: .pair(left: .value(1), right: .value(1)),
+            right: .pair(left: .pair(left: .value(3), right: .value(4)), right: .value(5))
         )
         XCTAssertEqual(result, expected)
     }

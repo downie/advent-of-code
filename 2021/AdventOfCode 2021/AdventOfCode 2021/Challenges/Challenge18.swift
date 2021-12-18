@@ -63,6 +63,10 @@ indirect enum SnailfishNumber: Equatable, Hashable {
         
         return .pair(left: left, right: right)
     }
+    
+    public static func +(lhs: SnailfishNumber, rhs: SnailfishNumber) -> SnailfishNumber {
+        lhs
+    }
 }
 
 struct Challenge18: View {
