@@ -7,8 +7,40 @@
 
 import SwiftUI
 
+class SnailfishSolver: ObservableObject {
+    @Published var output = ""
+    
+    private let isPartTwo: Bool
+    private let input: String
+    
+    init(demoInput: String? = nil, isPartTwo: Bool = false) {
+        self.isPartTwo = isPartTwo
+        if let demoInput = demoInput {
+            input = demoInput
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            let inputData = NSDataAsset(name: "16")!.data
+            input = String(data: inputData, encoding: .utf8)!
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+    }
+    
+    func solve() {
+        output = "Snailfish"
+    }
+}
+
+indirect enum SnailfishNumber {
+    case value(_: Int)
+    case pair(left: SnailfishNumber, right: SnailfishNumber)
+    
+    static func from(string: String) -> SnailfishNumber {
+        .value(0)
+    }
+}
+
 struct Challenge18: View {
-    @StateObject var state = DummyChallenge()
+    @StateObject var state = SnailfishSolver()
     let pasteboard = NSPasteboard.general
     
     var body: some View {
