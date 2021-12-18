@@ -117,7 +117,7 @@ class PathFinder: ObservableObject {
             riskPointer = accumulatedRisk[riskPointer.from]!
         }
         
-        print(output.joined(separator: "\n"))
+        print(output.reversed().joined(separator: "\n"))
         
         let map = (0..<maxY).map { y in
             (0..<maxX)
