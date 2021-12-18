@@ -65,7 +65,46 @@ indirect enum SnailfishNumber: Equatable, Hashable {
     }
     
     public static func +(lhs: SnailfishNumber, rhs: SnailfishNumber) -> SnailfishNumber {
-        .pair(left: lhs, right: rhs)
+        reduce(.pair(left: lhs, right: rhs))
+    }
+    
+    private static func firstOverlyNestedNumber(in number: SnailfishNumber, depth: Int = 0) -> SnailfishNumber? {
+        guard depth < 4 else {
+            return number
+        }
+        switch number {
+        case .value:
+             return nil
+        case .pair(let left, let right):
+            if let match = firstOverlyNestedNumber(in: left, depth: depth + 1) {
+                return match
+            } else if let match = firstOverlyNestedNumber(in: right, depth: depth + 1) {
+                return match
+            }
+        }
+        return nil
+    }
+    
+    private static func firstPairWithALargeValue(in number: SnailfishNumber) -> SnailfishNumber? {
+        nil
+    }
+    
+    private static func reduce(_ number: SnailfishNumber) -> SnailfishNumber {
+        if let pairToExplode = firstOverlyNestedNumber(in: number) {
+//            guard case let .pair(left, right) = pairToExplode else {
+//                fatalError()
+//            }
+//            switch (left, right) {
+//            case let (.pair(innerLeft, innerRight), _):
+//
+//            case let (_ .pair(innerLeft, innerRight)):
+//            }
+        } else if let pairToSplit = firstPairWithALargeValue(in: number) {
+
+        } else {
+            return number
+        }
+        return number
     }
 }
 
