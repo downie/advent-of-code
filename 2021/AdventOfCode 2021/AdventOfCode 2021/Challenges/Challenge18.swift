@@ -35,9 +35,9 @@ class SnailfishNumber: Equatable {
         lhs.value == rhs.value && lhs.left == rhs.left && lhs.right == rhs.right
     }
     
-    let value: Int?
-    let left: SnailfishNumber?
-    let right: SnailfishNumber?
+    var value: Int?
+    var left: SnailfishNumber?
+    var right: SnailfishNumber?
     
     init(_ value: Int) {
         self.value = value
@@ -111,21 +111,26 @@ class SnailfishNumber: Equatable {
     }
     
     private static func reduce(_ number: SnailfishNumber) -> SnailfishNumber {
+        var workingNumber = number
+        reduceInPlace(&workingNumber)
+        return workingNumber
+    }
+    
+    private static func reduceInPlace(_ number: inout SnailfishNumber) {
         if let pairToExplode = firstOverlyNestedNumber(in: number) {
-//            guard case let .pair(left, right) = pairToExplode else {
-//                fatalError()
-//            }
-//            switch (left, right) {
-//            case let (.pair(innerLeft, innerRight), _):
-//
-//            case let (_ .pair(innerLeft, innerRight)):
-//            }
-        } else if let pairToSplit = firstPairWithALargeValue(in: number) {
-
-        } else {
-            return number
+            guard let left = pairToExplode.left, let right = pairToExplode.right else {
+                fatalError()
+            }
+            
+            if let innerRight = left.right?.value, let rightValue = right.value {
+                pairToExplode.left = .value(0)
+                pairToExplode.right = .value(rightValue + innerRight)
+            } else if let leftValue = left.value, let innerLeft = right.left?.value {
+                pairToExplode.left = .value(leftValue + innerLeft)
+                pairToExplode.right = .value(0)
+            }
+            reduceInPlace(&number)
         }
-        return number
     }
 }
 
