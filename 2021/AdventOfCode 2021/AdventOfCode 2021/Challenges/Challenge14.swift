@@ -29,6 +29,73 @@ CN -> C
 
 """
 
+struct SquareMatrix: CustomStringConvertible {
+    let size: Int
+    private var values = [Point: Int]()
+    
+    init(size: Int) {
+        self.size = size
+    }
+    
+    func valueAt(row: Int, column: Int) -> Int {
+        values[Point(x: column, y: row)] ?? 0
+    }
+    
+    mutating func update(row: Int, column: Int, to value: Int) {
+        precondition(0 <= row && row < size)
+        precondition(0 <= column && column < size)
+        values[Point(x: column, y: row)] = value
+    }
+    
+    static func *(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
+        precondition(lhs.size == rhs.size)
+        var result = SquareMatrix(size: lhs.size)
+        for leftRow in 0..<lhs.size {
+            for leftColumn in 0..<lhs.size {
+                let left = lhs.valueAt(row: leftRow, column: leftColumn)
+                let right = rhs.valueAt(row: leftColumn, column: leftRow)
+                result.update(row: leftRow, column: leftColumn, to: left * right)
+            }
+        }
+        return result
+    }
+    
+    static func *(lhs: Int, rhs: SquareMatrix) -> SquareMatrix {
+        var result = SquareMatrix(size: rhs.size)
+        for row in 0..<rhs.size {
+            for column in 0..<rhs.size {
+                let value = rhs.valueAt(row: row, column: column)
+                result.update(row: row, column: column, to: lhs * value)
+            }
+        }
+        return result
+    }
+    
+    static func +(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
+        precondition(lhs.size == rhs.size)
+        var result = SquareMatrix(size: lhs.size)
+        for leftRow in 0..<lhs.size {
+            for leftColumn in 0..<lhs.size {
+                let left = lhs.valueAt(row: leftRow, column: leftColumn)
+                let right = rhs.valueAt(row: leftRow, column: leftColumn)
+                result.update(row: leftRow, column: leftColumn, to: left + right)
+            }
+        }
+        return result
+    }
+    
+    var description: String {
+        (0..<size).map { row -> String in
+            (0..<size).map { col in
+                values[Point(x: col, y: row)] ?? 0
+            }
+            .map(String.init)
+            .joined(separator: " ")
+        }
+        .joined(separator: "\n")
+    }
+}
+
 class PolymerExtruder: ObservableObject {
     struct Rule {
         let replace: String
@@ -37,8 +104,9 @@ class PolymerExtruder: ObservableObject {
     
     @Published var output = ""
     private let isDemo = true
-    private let isPartTwo = true
-    private let isDFS = true
+    private let isPartTwo = false
+    private let isDFS = false
+    private let isMatrixSolution = true
     private var maxSteps: Int {
         isPartTwo ? 40 : 10
     }
@@ -46,6 +114,11 @@ class PolymerExtruder: ObservableObject {
     var polymer: String
     var rules: [String: Character] // [from : to]
     var treeRules: [Character: [Character: Character]]
+    
+    // Matrix attempt
+    let indexContent: [Character]
+    var countMatrix: SquareMatrix
+    let changeMap: [String: SquareMatrix]
     
     init() {
         let input: String
@@ -66,6 +139,37 @@ class PolymerExtruder: ObservableObject {
                 let pair = line.components(separatedBy: " -> ")
                 partialResult[pair[0]] = Character(pair[1])
             }
+        let allLetters: Set<Character> = rules.reduce(into: Set<Character>()) { partialResult, pair in
+            partialResult.insert(pair.value)
+            pair.key.forEach { partialResult.insert($0) }
+        }
+        indexContent = Array(allLetters)
+        let size = indexContent.count
+        // Set up that matrix
+        countMatrix = SquareMatrix(size: size)
+        
+        for offset in 0..<polymer.count-1 {
+            let index = polymer.index(polymer.startIndex, offsetBy: offset, limitedBy: polymer.endIndex)!
+            let pair = polymer[index...polymer.index(after: index)]
+            let row = indexContent.firstIndex(of: pair.first!)!
+            let column = indexContent.firstIndex(of: pair.last!)!
+            countMatrix.update(row: row, column: column, to: countMatrix.valueAt(row: row, column: column) + 1)
+        }
+
+        changeMap = rules.reduce(into: [String: SquareMatrix]()) { [indexContent] partialResult, pair in
+            let (key, value) = pair
+            let firstIndex = indexContent.firstIndex(of: key.first!)!
+            let lastIndex = indexContent.firstIndex(of: key.last!)!
+            let middleIndex = indexContent.firstIndex(of: value)!
+            
+            var matrix = SquareMatrix(size: size)
+            matrix.update(row: firstIndex, column: lastIndex, to: matrix.valueAt(row: firstIndex, column: lastIndex) - 1)
+            matrix.update(row: firstIndex, column: middleIndex, to: matrix.valueAt(row: firstIndex, column: middleIndex) + 1)
+            matrix.update(row: middleIndex, column: lastIndex, to: matrix.valueAt(row: middleIndex, column: lastIndex) + 1)
+
+            partialResult[key] = matrix
+        }
+        
         treeRules = rules.reduce(into: [Character: [Character: Character]]()) { partialResult, pair in
             let firstLetter = pair.key[pair.key.startIndex]
             let secondLetter = pair.key[pair.key.index(after: pair.key.startIndex)]
@@ -76,7 +180,10 @@ class PolymerExtruder: ObservableObject {
     }
     
     func solve() {
-        if isDFS { // isPartTwo
+        if isMatrixSolution {
+            let result = solveWithMatrixMath()
+            output = "\(result)"
+        } else if isDFS { // isPartTwo
             // Expanding the string is a kind of bredth-first search. Let's do depth
             let result = depthFirstScore(polymer: Array(polymer))
             output = "\(result)"
@@ -96,6 +203,44 @@ class PolymerExtruder: ObservableObject {
             let result = score(polymer: String(chars))
             output = "\(result)"
         }
+    }
+    
+    func solveWithMatrixMath() -> Int {
+        let size = indexContent.count
+        (0..<maxSteps).forEach { _ in
+            var nextStepCount = SquareMatrix(size: size)
+            (0..<size).forEach { row in
+                (0..<size).forEach { col in
+                    let multiple = countMatrix.valueAt(row: row, column: col)
+                    let key = "\(indexContent[row])\(indexContent[col])"
+                    if let matrix = changeMap[key] {
+                        nextStepCount = nextStepCount + multiple * matrix
+                    }
+                }
+            }
+            countMatrix = nextStepCount
+        }
+        return score(matrix: countMatrix)
+    }
+    
+    func score(matrix: SquareMatrix) -> Int {
+        let size = indexContent.count
+        let scores = indexContent
+            .map { indexContent.firstIndex(of: $0)! }
+            .map { index -> Int in
+                let points = Set([
+                    (0..<size).map { col in Point(x: index, y: col) },
+                    (0..<size).map { row in Point(x: row, y: index) },
+                ]
+                    .flatMap { $0 })
+                return points.map { point in
+                    countMatrix.valueAt(row: point.x, column: point.y)
+                }.reduce(0, +)
+            }
+        
+        let maximum = scores.reduce(0, max)
+        let minimum = scores.reduce(Int.max, min)
+        return maximum - minimum
     }
     
     func iterate(polymer: String) -> String {
