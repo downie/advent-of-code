@@ -29,7 +29,7 @@ CN -> C
 
 """
 
-struct SquareMatrix: CustomStringConvertible {
+struct SquareMatrix: Equatable, CustomStringConvertible {
     let size: Int
     private var values = [Point: Int]()
     
@@ -82,6 +82,20 @@ struct SquareMatrix: CustomStringConvertible {
             }
         }
         return result
+    }
+    
+    static func ==(lhs: SquareMatrix, rhs: SquareMatrix) -> Bool {
+        guard lhs.size == rhs.size else {
+            return false
+        }
+        for row in 0..<lhs.size {
+            for col in 0..<rhs.size {
+                guard lhs.valueAt(row: row, column: col) == rhs.valueAt(row: row, column: col) else {
+                    return false
+                }
+            }
+        }
+        return true
     }
     
     var description: String {
