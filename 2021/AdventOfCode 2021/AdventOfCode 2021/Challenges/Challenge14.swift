@@ -238,26 +238,19 @@ class PolymerExtruder: ObservableObject {
             }
             countMatrix = nextStepCount
         }
-        return score(matrix: countMatrix)
+        return Self.score(matrix: countMatrix, content: indexContent)
     }
     
-    func score(matrix: SquareMatrix) -> Int {
-        let size = indexContent.count
-        let scores = indexContent
-            .map { indexContent.firstIndex(of: $0)! }
-            .map { index -> Int in
-                let points = Set([
-                    (0..<size).map { col in Point(x: index, y: col) },
-                    (0..<size).map { row in Point(x: row, y: index) },
-                ]
-                    .flatMap { $0 })
-                return points.map { point in
-                    countMatrix.valueAt(row: point.x, column: point.y)
-                }.reduce(0, +)
-            }
+    static func letterFrequencies(for matrix: SquareMatrix, content: [Character]) -> [Character: Int] {
+        precondition(matrix.size == content.count)
+        return [Character: Int]()
+    }
+    
+    static func score(matrix: SquareMatrix, content: [Character]) -> Int {
+        let frequencies = letterFrequencies(for: matrix, content: content)
         
-        let maximum = scores.reduce(0, max)
-        let minimum = scores.reduce(Int.max, min)
+        let maximum = frequencies.map { $0.value }.reduce(0, max)
+        let minimum = frequencies.map { $0.value }.reduce(Int.max, min)
         return maximum - minimum
     }
     
