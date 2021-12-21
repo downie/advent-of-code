@@ -49,12 +49,16 @@ struct SquareMatrix: Equatable, CustomStringConvertible {
     
     static func *(lhs: SquareMatrix, rhs: SquareMatrix) -> SquareMatrix {
         precondition(lhs.size == rhs.size)
-        var result = SquareMatrix(size: lhs.size)
-        for leftRow in 0..<lhs.size {
-            for leftColumn in 0..<lhs.size {
-                let left = lhs.valueAt(row: leftRow, column: leftColumn)
-                let right = rhs.valueAt(row: leftColumn, column: leftRow)
-                result.update(row: leftRow, column: leftColumn, to: left * right)
+        let size = lhs.size
+        var result = SquareMatrix(size: size)
+        for leftRow in 0..<size {
+            for rightColumn in 0..<size {
+                let leftValues = (0..<size).map { lhs.valueAt(row: leftRow, column: $0) }
+                let rightValues = (0..<size).map { rhs.valueAt(row: $0, column: rightColumn)}
+                let value = zip(leftValues, rightValues).reduce(0) { partialResult, pair in
+                    partialResult + pair.0 * pair.1
+                }
+                result.update(row: leftRow, column: rightColumn, to: value)
             }
         }
         return result
