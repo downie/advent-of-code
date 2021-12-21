@@ -224,9 +224,11 @@ class PolymerExtruder: ObservableObject {
     }
     
     func solveWithMatrixMath() -> Int {
+        print(countMatrix)
+        print(Self.letterFrequencies(for: countMatrix, content: indexContent, lastLetter: polymer.last!))
         let size = indexContent.count
         (0..<maxSteps).forEach { _ in
-            var nextStepCount = SquareMatrix(size: size)
+            var nextStepCount = countMatrix
             (0..<size).forEach { row in
                 (0..<size).forEach { col in
                     let multiple = countMatrix.valueAt(row: row, column: col)
@@ -237,6 +239,8 @@ class PolymerExtruder: ObservableObject {
                 }
             }
             countMatrix = nextStepCount
+            print(countMatrix)
+            print(Self.letterFrequencies(for: countMatrix, content: indexContent, lastLetter: polymer.last!))
         }
         return Self.score(matrix: countMatrix, content: indexContent, lastLetter: polymer.last!)
     }
@@ -259,7 +263,7 @@ class PolymerExtruder: ObservableObject {
     
     static func score(matrix: SquareMatrix, content: [Character], lastLetter: Character) -> Int {
         let frequencies = letterFrequencies(for: matrix, content: content, lastLetter: lastLetter)
-        
+        print(frequencies)
         let maximum = frequencies.map { $0.value }.reduce(0, max)
         let minimum = frequencies.map { $0.value }.reduce(Int.max, min)
         return maximum - minimum
