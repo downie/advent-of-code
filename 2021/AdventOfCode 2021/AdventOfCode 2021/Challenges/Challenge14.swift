@@ -121,8 +121,8 @@ class PolymerExtruder: ObservableObject {
     }
     
     @Published var output = ""
-    private let isDemo = true
-    private let isPartTwo = false
+    private let isDemo = false
+    private let isPartTwo = true
     private let isDFS = false
     private let isMatrixSolution = true
     private var maxSteps: Int {
@@ -224,8 +224,6 @@ class PolymerExtruder: ObservableObject {
     }
     
     func solveWithMatrixMath() -> Int {
-        print(countMatrix)
-        print(Self.letterFrequencies(for: countMatrix, content: indexContent, lastLetter: polymer.last!))
         let size = indexContent.count
         (0..<maxSteps).forEach { _ in
             var nextStepCount = countMatrix
@@ -239,8 +237,6 @@ class PolymerExtruder: ObservableObject {
                 }
             }
             countMatrix = nextStepCount
-            print(countMatrix)
-            print(Self.letterFrequencies(for: countMatrix, content: indexContent, lastLetter: polymer.last!))
         }
         return Self.score(matrix: countMatrix, content: indexContent, lastLetter: polymer.last!)
     }
