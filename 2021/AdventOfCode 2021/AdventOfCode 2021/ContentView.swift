@@ -33,10 +33,12 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            ForEach(5..<26) { number in
-                NavigationLink("\(number)", tag: number, selection: $selectedChallenge) {
-                    challengeView(for: number)
-                }
+            List {
+                ForEach(5..<26) { number in
+                    NavigationLink("\(number)", tag: number, selection: $selectedChallenge) {
+                        challengeView(for: number)
+                    }
+                }   
             }
             Text("Nothing Selected")
         }
