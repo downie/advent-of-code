@@ -73,13 +73,26 @@ class PathFinder: ObservableObject {
         while !openSet.isEmpty  {
             // The next point to expand is the lowest risk one. If there are multiple. chose the one closer to the exit.
             currentPoint = openSet.sorted { left, right in
-                let leftRisk = riskMap[left, default: Int.max]
-                let rightRisk = riskMap[right, default: Int.max]
-                if leftRisk == rightRisk {
-                    return manhattanDistance(from: left, to: end) < manhattanDistance(from: right, to: end)
+                let leftExtraRisk = riskMap[left]
+                let rightExtraRisk = riskMap[right]
+                let leftRiskSoFar = accumulatedRisk[left]?.risk
+                let rightRiskSoFar = accumulatedRisk[right]?.risk
+                
+                let left: Int
+                
+                if let leftExtraRisk = leftExtraRisk, let leftRiskSoFar = leftRiskSoFar {
+                    left = leftExtraRisk + leftRiskSoFar
                 } else {
-                    return leftRisk < rightRisk
+                    left = Int.max
                 }
+                
+                let right: Int
+                if let rightExtraRisk = rightExtraRisk, let rightRiskSoFar = rightRiskSoFar {
+                    right = rightExtraRisk + rightRiskSoFar
+                } else {
+                    right = Int.max
+                }
+                return left < right
             }.first!
             print("current point is \(currentPoint)")
             if currentPoint == end {
@@ -99,6 +112,7 @@ class PathFinder: ObservableObject {
                     openSet.insert(neighbor)
                 }
             }
+            print(showRiskMap(accumulatedRisk))
         }
         
         print("Open set is emptied but we never got there?")
@@ -118,14 +132,25 @@ class PathFinder: ObservableObject {
         }
         
         print(output.reversed().joined(separator: "\n"))
-        
+        showRiskMap(accumulatedRisk)
+    }
+    
+    func showRiskMap(_ accumulatedRisk: [Point: RiskTotal]) {
         let map = (0..<maxY).map { y in
             (0..<maxX)
                 .map { x in accumulatedRisk[Point(x: x, y: y)]?.risk ?? -1 }
                 .map(String.init)
+                .map(pad(string:))
                 .joined(separator: " ")
         }.joined(separator: "\n")
         print(map)
+    }
+    
+    func pad(string: String) -> String {
+        if string.count < 2 {
+            return " \(string)"
+        }
+        return string
     }
 }
 
