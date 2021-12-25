@@ -104,21 +104,21 @@ class PathFinder: ObservableObject {
                 let leftRiskSoFar = accumulatedRisk[left]?.risk
                 let rightRiskSoFar = accumulatedRisk[right]?.risk
                 
-                let left: Int
+                let leftValue: Int
                 
                 if let leftExtraRisk = leftExtraRisk, let leftRiskSoFar = leftRiskSoFar {
-                    left = leftExtraRisk + leftRiskSoFar
+                    leftValue = leftExtraRisk + leftRiskSoFar + manhattanDistance(from: left, to: end)
                 } else {
-                    left = Int.max
+                    leftValue = Int.max
                 }
                 
-                let right: Int
+                let rightValue: Int
                 if let rightExtraRisk = rightExtraRisk, let rightRiskSoFar = rightRiskSoFar {
-                    right = rightExtraRisk + rightRiskSoFar
+                    rightValue = rightExtraRisk + rightRiskSoFar + manhattanDistance(from: right, to: end)
                 } else {
-                    right = Int.max
+                    rightValue = Int.max
                 }
-                return left < right
+                return leftValue < rightValue
             }.first!
 //            print("current point is \(currentPoint)")
             if currentPoint == end {
