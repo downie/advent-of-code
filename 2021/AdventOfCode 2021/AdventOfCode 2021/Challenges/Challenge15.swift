@@ -23,8 +23,9 @@ private let demoInput = """
 
 class PathFinder: ObservableObject {
     @Published var output = ""
-    private let isDemo = false
-    private let isPartTwo = false
+    private let isDemo = true
+    private let isPartTwo = true
+    private let partTwoGridMultiple = 5
     
     let maxX: Int
     let maxY: Int
@@ -62,9 +63,34 @@ class PathFinder: ObservableObject {
         }
     }
     
+    func risk(for point: Point) -> Int? {
+        guard isPartTwo else {
+            return riskMap[point]
+        }
+        let originPoint = Point(x: point.x % maxX, y: point.y % maxY)
+        guard let originValue = riskMap[originPoint] else {
+            return nil
+        }
+        let multipleX = point.x / maxX
+        let multipleY = point.y / maxY
+        if multipleX >= partTwoGridMultiple || multipleY >= partTwoGridMultiple {
+            return nil
+        }
+        var totalSum = (originValue + multipleX + multipleY)
+        while totalSum > 9 {
+            totalSum -= 9
+        }
+        return totalSum
+    }
+    
     func solve() {
         let start = Point(x: 0, y: 0)
-        let end = Point(x: maxX-1, y: maxY-1)
+        let end: Point
+        if isPartTwo {
+            end = Point(x: (maxX * partTwoGridMultiple) - 1, y: (maxY * partTwoGridMultiple) - 1)
+        } else {
+            end = Point(x: maxX-1, y: maxY-1)
+        }
         accumulatedRisk[start] = RiskTotal(risk: 0, from: start)
         
         var openSet = Set<Point>([start])
@@ -73,8 +99,8 @@ class PathFinder: ObservableObject {
         while !openSet.isEmpty  {
             // The next point to expand is the lowest risk one. If there are multiple. chose the one closer to the exit.
             currentPoint = openSet.sorted { left, right in
-                let leftExtraRisk = riskMap[left]
-                let rightExtraRisk = riskMap[right]
+                let leftExtraRisk = risk(for: left)
+                let rightExtraRisk = risk(for: right)
                 let leftRiskSoFar = accumulatedRisk[left]?.risk
                 let rightRiskSoFar = accumulatedRisk[right]?.risk
                 
@@ -105,8 +131,8 @@ class PathFinder: ObservableObject {
             
             let currentRisk = accumulatedRisk[currentPoint]!
 
-            for neighbor in currentPoint.adjacentPoints(includingDiagonals: false) where neighbor.x >= 0 && neighbor.x < maxX && neighbor.y >= 0 && neighbor.y < maxY {
-                let totalRisk = currentRisk.risk + riskMap[neighbor]!
+            for neighbor in currentPoint.adjacentPoints(includingDiagonals: false) where isInBounds(point: neighbor) {
+                let totalRisk = currentRisk.risk + risk(for: neighbor)!
                 if totalRisk < (accumulatedRisk[neighbor]?.risk ?? Int.max) {
                     accumulatedRisk[neighbor] = RiskTotal(risk: totalRisk, from: currentPoint)
                     openSet.insert(neighbor)
@@ -117,6 +143,20 @@ class PathFinder: ObservableObject {
         
         print("Open set is emptied but we never got there?")
         
+    }
+    
+    func isInBounds(point: Point) -> Bool {
+        if isPartTwo {
+            return point.x >= 0
+            && point.x < maxX * partTwoGridMultiple
+            && point.y >= 0
+            && point.y < maxY * partTwoGridMultiple
+        } else {
+            return point.x >= 0
+            && point.x < maxX
+            && point.y >= 0
+            && point.y < maxY
+        }
     }
     
     func manhattanDistance(from: Point, to: Point) -> Int {
