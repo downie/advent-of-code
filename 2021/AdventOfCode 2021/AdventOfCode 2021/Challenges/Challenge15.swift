@@ -23,7 +23,7 @@ private let demoInput = """
 
 class PathFinder: ObservableObject {
     @Published var output = ""
-    private let isDemo = true
+    private let isDemo = false
     private let isPartTwo = false
     
     let maxX: Int
@@ -94,7 +94,7 @@ class PathFinder: ObservableObject {
                 }
                 return left < right
             }.first!
-            print("current point is \(currentPoint)")
+//            print("current point is \(currentPoint)")
             if currentPoint == end {
                 let totalRisk = accumulatedRisk[currentPoint]!
                 output = "\(totalRisk.risk)"
@@ -112,7 +112,7 @@ class PathFinder: ObservableObject {
                     openSet.insert(neighbor)
                 }
             }
-            print(showRiskMap(accumulatedRisk))
+//            print(showRiskMap(accumulatedRisk))
         }
         
         print("Open set is emptied but we never got there?")
