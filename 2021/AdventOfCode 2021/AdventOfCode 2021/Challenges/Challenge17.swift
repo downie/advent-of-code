@@ -27,6 +27,21 @@ class BallisticSolver: Solver {
         && bottomRight.y <= point.y
         && point.y <= topLeft.y 
     }
+    
+    static func trajectory(from start: Point, initialVelocity: Point, before bottomRight: Point) -> [Point] {
+        var lastPoint = start
+        var velocity = initialVelocity
+        var points = [Point]()
+        while lastPoint.x <= bottomRight.x && lastPoint.y >= bottomRight.y {
+            if lastPoint != start {
+                points.append(lastPoint)
+            }
+            lastPoint += velocity
+            velocity += Point(x: velocity.x > 0 ? -1 : 0, y: -1)
+        }
+
+        return points
+    }
 }
 
 class SolverState: ObservableObject {

@@ -24,4 +24,18 @@ class Challenge17Tests: XCTestCase {
         let bottomRight = Point(x: 10, y: 2)
         XCTAssertFalse(BallisticSolver.isPoint(test, between: topLeft, and: bottomRight))
     }
+    
+    // MARK: Trajectory tests
+    
+    func testShallowArcTrjectory() throws {
+        let velocity = Point(x: 9, y: 0)
+        let result = BallisticSolver.trajectory(from: .zero, initialVelocity: velocity, before: Point(x: 30, y: -10))
+        let expected = [
+            Point(x: 9, y: 0),
+            Point(x: 17, y: -1),
+            Point(x: 24, y: -3),
+            Point(x: 30, y: -6)
+        ]
+        XCTAssertEqual(result, expected)
+    }
 }

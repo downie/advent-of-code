@@ -12,6 +12,20 @@ struct Point: Hashable {
     let y: Int
 }
 
+extension Point {
+    static let zero = Point(x: 0, y: 0)
+}
+
+extension Point: AdditiveArithmetic {
+    static func - (lhs: Point, rhs: Point) -> Point {
+        Point(x: lhs.x - rhs.x, y: lhs.y - rhs.y)
+    }
+    
+    static func +(lhs: Point, rhs: Point) -> Point {
+        Point(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
+    }
+}
+
 struct Line {
     let from: Point
     let to: Point
