@@ -7,16 +7,67 @@
 
 import SwiftUI
 
+class BallisticSolver: Solver {
+    
+}
+
+class SeventeenState: ObservableObject {
+    @Published var isDemoInput = true {
+        didSet {
+            restartSolver()
+        }
+    }
+    @Published var isPartTwo = false {
+        didSet {
+            restartSolver()
+        }
+    }
+    @Published var output = ""
+    
+    var solver: BallisticSolver?
+    
+    func restartSolver() {
+        solver?.cancel()
+        let input: String
+        if isDemoInput {
+            input = "target area: x=20..30, y=-10..-5"
+        } else {
+            let inputData = NSDataAsset(name: "17")!.data
+            input = String(data: inputData, encoding: .utf8)!
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
+        solver = BallisticSolver(input: input, isPartTwo: isPartTwo)
+    }
+    
+    @MainActor
+    func solve() async {
+        guard let solver = solver else {
+            output = "No solver present."
+            return
+        }
+
+        do {
+            output = try await solver.solve()
+        } catch {
+            output = "Error: \(error.localizedDescription)"
+        }
+    }
+}
+
 struct Challenge17: View {
-    @StateObject var state = DummyChallenge()
+    @StateObject var state = SeventeenState()
+    
     let pasteboard = NSPasteboard.general
     
     var body: some View {
         VStack {
+            Toggle("Is Demo Input?", isOn: $state.isDemoInput)
+            Toggle("Is Part Two?", isOn: $state.isPartTwo)
             Text(state.output)
                 .font(.system(.body, design: .monospaced))
                 .onAppear {
-                    state.solve()
+                    solveChallenge()
                 }
             Button {
                 pasteboard.prepareForNewContents()
@@ -26,6 +77,12 @@ struct Challenge17: View {
             }
         }
         .frame(minWidth: 200)
+    }
+    
+    func solveChallenge() {
+        Task {
+            await state.solve()
+        }
     }
 }
 

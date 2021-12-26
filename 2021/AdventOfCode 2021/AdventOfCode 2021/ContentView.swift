@@ -29,7 +29,7 @@ class DummyChallenge: ObservableObject {
 }
 
 struct ContentView: View {
-    @State var selectedChallenge: Int? = 15
+    @State var selectedChallenge: Int? = 17
 
     var body: some View {
         NavigationView {
