@@ -44,6 +44,7 @@
 		83F34128276E3C59008DCF02 /* SnailfishParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F34127276E3C59008DCF02 /* SnailfishParsingTests.swift */; };
 		83FE761D2778C4DA0009836C /* Challenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FE761C2778C4DA0009836C /* Challenge.swift */; };
 		83FE761F2778CC820009836C /* Solver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FE761E2778CC820009836C /* Solver.swift */; };
+		83FE76212778EF6B0009836C /* Challenge17Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FE76202778EF6B0009836C /* Challenge17Tests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,7 @@
 		83F34127276E3C59008DCF02 /* SnailfishParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnailfishParsingTests.swift; sourceTree = "<group>"; };
 		83FE761C2778C4DA0009836C /* Challenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge.swift; sourceTree = "<group>"; };
 		83FE761E2778CC820009836C /* Solver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Solver.swift; sourceTree = "<group>"; };
+		83FE76202778EF6B0009836C /* Challenge17Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge17Tests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,6 +183,7 @@
 				83F34123276B9658008DCF02 /* BitStreamTests.swift */,
 				8392F1E127718E7900CE6A0B /* Challenge14Tests.swift */,
 				83F34125276BBEFD008DCF02 /* Challenge16Tests.swift */,
+				83FE76202778EF6B0009836C /* Challenge17Tests.swift */,
 				83ACE628276B77B1008ADE49 /* PacketDecoderTests.swift */,
 				83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */,
 				83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */,
@@ -395,6 +398,7 @@
 				8392F1E0277187B600CE6A0B /* SquareMatrixTests.swift in Sources */,
 				8392F1E227718E7900CE6A0B /* Challenge14Tests.swift in Sources */,
 				83ACE62D276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift in Sources */,
+				83FE76212778EF6B0009836C /* Challenge17Tests.swift in Sources */,
 				83F34126276BBEFD008DCF02 /* Challenge16Tests.swift in Sources */,
 				83ACE62B276B7C3F008ADE49 /* PacketAnalyzerTests.swift in Sources */,
 			);
@@ -546,7 +550,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "AdventOfCode 2021/AdventOfCode_2021.entitlements";
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -574,7 +578,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "AdventOfCode 2021/AdventOfCode_2021.entitlements";
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -601,6 +605,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -626,6 +631,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -650,6 +656,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -673,6 +680,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;

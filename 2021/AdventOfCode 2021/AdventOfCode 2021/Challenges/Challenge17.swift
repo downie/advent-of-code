@@ -20,6 +20,13 @@ class BallisticSolver: Solver {
 
         return "\(topLeft), \(bottomRight)"
     }
+    
+    static func isPoint(_ point: Point, between topLeft: Point, and bottomRight: Point) -> Bool {
+        topLeft.x <= point.x
+        && point.x <= bottomRight.x
+        && bottomRight.y <= point.y
+        && point.y <= topLeft.y 
+    }
 }
 
 class SolverState: ObservableObject {
