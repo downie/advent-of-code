@@ -23,7 +23,7 @@ private let demoInput = """
 
 class PathFinder: ObservableObject {
     @Published var output = ""
-    private let isDemo = true
+    private let isDemo = false
     private let isPartTwo = true
     private let partTwoGridMultiple = 5
     
@@ -92,7 +92,7 @@ class PathFinder: ObservableObject {
             end = Point(x: maxX-1, y: maxY-1)
         }
         accumulatedRisk[start] = RiskTotal(risk: 0, from: start)
-        
+        showMap()
         var openSet = Set<Point>([start])
         var currentPoint = start
 
@@ -184,6 +184,20 @@ class PathFinder: ObservableObject {
                 .joined(separator: " ")
         }.joined(separator: "\n")
         print(map)
+    }
+    
+    func showMap() {
+        let lines = (0..<maxY * partTwoGridMultiple).map { y in
+            (0..<maxX * partTwoGridMultiple).map { x -> String in
+                let point = Point(x: x, y: y)
+                if let value = self.risk(for: point) {
+                    return "\(value)"
+                } else {
+                    return " "
+                }
+            }.joined()
+        }.joined(separator: "\n")
+        print(lines)
     }
     
     func pad(string: String) -> String {
