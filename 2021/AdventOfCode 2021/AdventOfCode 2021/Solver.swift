@@ -12,8 +12,10 @@ public class Solver {
     private let logger: Logger
     private let isPartTwo: Bool
     private var task: Task<String, Error>?
+    private let input: String
 
     public init(input: String, isPartTwo: Bool, logger: Logger = Logger()) {
+        self.input = input
         self.isPartTwo = isPartTwo
         self.logger = logger
     }
@@ -33,6 +35,9 @@ public class Solver {
     
     // Override these
     func solveOrThrow() throws -> String {
-        "Not Implemented"
+        """
+        Part \(isPartTwo ? 2 : 1): Not Implemented
+        Input: \(input)
+        """
     }
 }

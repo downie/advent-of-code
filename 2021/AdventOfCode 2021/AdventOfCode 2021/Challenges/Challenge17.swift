@@ -15,16 +15,22 @@ class SeventeenState: ObservableObject {
     @Published var isDemoInput = true {
         didSet {
             restartSolver()
+            Task { await solve() }
         }
     }
     @Published var isPartTwo = false {
         didSet {
             restartSolver()
+            Task { await solve() }
         }
     }
     @Published var output = ""
     
     var solver: BallisticSolver?
+    
+    init() {
+        restartSolver()
+    }
     
     func restartSolver() {
         solver?.cancel()
