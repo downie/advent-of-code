@@ -15,7 +15,7 @@ public class Solver {
     private let logger: Logger
     private let isPartTwo: Bool
     private var task: Task<String, Error>?
-    private let input: String
+    let input: String
     
     required public init(input: String, isPartTwo: Bool, logger: Logger = Logger()) {
         self.input = input
@@ -25,7 +25,7 @@ public class Solver {
     
     /// Runs the solver on a background thread. The completion handler is called when a result is reached.
     /// - Parameter completion: Called when this solver has completed its work.
-    public final func solve(completion: @escaping (Result<String, Error>) -> Void) {
+    public final func solve(completion: @escaping (Result<String, Swift.Error>) -> Void) {
         let operation = BlockOperation { [weak self] in
             guard let self = self else {
                 return
@@ -64,8 +64,8 @@ extension Solver {
         return try await task.value
     }
 //    Dropping cancellation support for now.
-    public func cancel() {
-        task?.cancel()
-        task = nil
-    }
+//    public func cancel() {
+//        task?.cancel()
+//        task = nil
+//    }
 }

@@ -8,36 +8,36 @@
 import SwiftUI
 
 class BallisticSolver: Solver {
-    override func solveOrThrow() throws -> String {
-        let input = self.input.dropFirst("target area: ".count)
-        let parts = input.components(separatedBy: ", ")
-        let xRange = parts.first!.dropFirst("x=".count)
-        let yRange = parts.last!.dropFirst("y=".count)
-        let xParts = xRange.components(separatedBy: "..").compactMap(Int.init)
-        let yParts = yRange.components(separatedBy: "..").compactMap(Int.init)
-        let topLeft = Point(x: xParts.first!, y: yParts.first!)
-        let bottomRight = Point(x: xParts.last!, y: yParts.last!)
-
-        return "\(topLeft), \(bottomRight)"
-    }
+//    override func solveOrThrow() throws -> String {
+//        let input = self.input.dropFirst("target area: ".count)
+//        let parts = input.components(separatedBy: ", ")
+//        let xRange = parts.first!.dropFirst("x=".count)
+//        let yRange = parts.last!.dropFirst("y=".count)
+//        let xParts = xRange.components(separatedBy: "..").compactMap(Int.init)
+//        let yParts = yRange.components(separatedBy: "..").compactMap(Int.init)
+//        let topLeft = Point(x: xParts.first!, y: yParts.first!)
+//        let bottomRight = Point(x: xParts.last!, y: yParts.last!)
+//
+//        return "\(topLeft), \(bottomRight)"
+//    }
 }
 
 class SolverState: ObservableObject {
     @Published var isDemoInput = true {
         didSet {
             restartSolver()
-            Task { await solve() }
         }
     }
+    
     @Published var isPartTwo = false {
         didSet {
             restartSolver()
-            Task { await solve() }
         }
     }
+    
     @Published var output = ""
     
-    var solver: Solver?
+    var solver: Solver!
     let solverType: Solver.Type
     
     init(type: Solver.Type) {
@@ -46,7 +46,6 @@ class SolverState: ObservableObject {
     }
     
     func restartSolver() {
-        solver?.cancel()
         let input: String
         if isDemoInput {
             input = "target area: x=20..30, y=-10..-5"
@@ -59,19 +58,30 @@ class SolverState: ObservableObject {
         solver = solverType.init(input: input, isPartTwo: isPartTwo)
     }
     
-//    @MainActor
-    func solve() async {
-        guard let solver = solver else {
-            output = "No solver present."
-            return
-        }
-
-        do {
-            output = try await solver.solve()
-        } catch {
-            output = "Error: \(error.localizedDescription)"
+    func solve() {
+        solver.solve { result in
+            switch result {
+            case .failure(let error):
+                print("Error: \(error.localizedDescription)")
+            case .success(let result):
+                print("Solved with result: \(result)")
+            }
         }
     }
+    
+//    @MainActor
+//    func solve() async {
+//        guard let solver = solver else {
+//            output = "No solver present."
+//            return
+//        }
+//
+//        do {
+//            output = try await solver.solve()
+//        } catch {
+//            output = "Error: \(error.localizedDescription)"
+//        }
+//    }
 }
 
 struct Challenge17: View {
@@ -86,7 +96,7 @@ struct Challenge17: View {
             Text(state.output)
                 .font(.system(.body, design: .monospaced))
                 .onAppear {
-                    solveChallenge()
+                    state.solve()
                 }
             Button {
                 pasteboard.prepareForNewContents()
@@ -94,14 +104,11 @@ struct Challenge17: View {
             } label: {
                 Label("Copy", systemImage: "doc.on.doc")
             }
+            Button("Solve") {
+                state.solve()
+            }.disabled(true)
         }
         .frame(minWidth: 200)
-    }
-    
-    func solveChallenge() {
-        Task {
-            await state.solve()
-        }
     }
 }
 
