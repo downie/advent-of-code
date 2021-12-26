@@ -8,18 +8,18 @@
 import SwiftUI
 
 class BallisticSolver: Solver {
-//    override func solveOrThrow() throws -> String {
-//        let input = self.input.dropFirst("target area: ".count)
-//        let parts = input.components(separatedBy: ", ")
-//        let xRange = parts.first!.dropFirst("x=".count)
-//        let yRange = parts.last!.dropFirst("y=".count)
-//        let xParts = xRange.components(separatedBy: "..").compactMap(Int.init)
-//        let yParts = yRange.components(separatedBy: "..").compactMap(Int.init)
-//        let topLeft = Point(x: xParts.first!, y: yParts.first!)
-//        let bottomRight = Point(x: xParts.last!, y: yParts.last!)
-//
-//        return "\(topLeft), \(bottomRight)"
-//    }
+    override func solveOrThrow() throws -> String {
+        let input = self.input.dropFirst("target area: ".count)
+        let parts = input.components(separatedBy: ", ")
+        let xRange = parts.first!.dropFirst("x=".count)
+        let yRange = parts.last!.dropFirst("y=".count)
+        let xParts = xRange.components(separatedBy: "..").compactMap(Int.init)
+        let yParts = yRange.components(separatedBy: "..").compactMap(Int.init)
+        let topLeft = Point(x: xParts.reduce(Int.max, min), y: yParts.reduce(Int.min, max))
+        let bottomRight = Point(x: xParts.reduce(Int.min, max), y: yParts.reduce(Int.max, min))
+
+        return "\(topLeft), \(bottomRight)"
+    }
 }
 
 class SolverState: ObservableObject {
