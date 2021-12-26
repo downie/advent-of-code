@@ -25,27 +25,28 @@ class BallisticSolver: Solver {
 class SolverState: ObservableObject {
     @Published var isDemoInput = true {
         didSet {
-            restartSolver()
+            resetSolver()
         }
     }
     
     @Published var isPartTwo = false {
         didSet {
-            restartSolver()
+            resetSolver()
         }
     }
     
     @Published var output = ""
+    @Published var isSolving = false
     
     var solver: Solver!
     let solverType: Solver.Type
     
     init(type: Solver.Type) {
         solverType = type
-        restartSolver()
+        resetSolver()
     }
     
-    func restartSolver() {
+    func resetSolver() {
         let input: String
         if isDemoInput {
             input = "target area: x=20..30, y=-10..-5"
@@ -59,29 +60,20 @@ class SolverState: ObservableObject {
     }
     
     func solve() {
-        solver.solve { result in
+        isSolving = true
+        solver.solve { [weak self] result in
+            guard let self = self else { return }
+            defer {
+                self.isSolving = false
+            }
             switch result {
             case .failure(let error):
-                print("Error: \(error.localizedDescription)")
+                self.output = "Error: \(error.localizedDescription)"
             case .success(let result):
-                print("Solved with result: \(result)")
+                self.output = result
             }
         }
     }
-    
-//    @MainActor
-//    func solve() async {
-//        guard let solver = solver else {
-//            output = "No solver present."
-//            return
-//        }
-//
-//        do {
-//            output = try await solver.solve()
-//        } catch {
-//            output = "Error: \(error.localizedDescription)"
-//        }
-//    }
 }
 
 struct Challenge17: View {
@@ -106,7 +98,7 @@ struct Challenge17: View {
             }
             Button("Solve") {
                 state.solve()
-            }.disabled(true)
+            }.disabled(state.isSolving)
         }
         .frame(minWidth: 200)
     }
