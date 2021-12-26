@@ -14,7 +14,7 @@ public class Solver {
     private var task: Task<String, Error>?
     private let input: String
 
-    public init(input: String, isPartTwo: Bool, logger: Logger = Logger()) {
+    required public init(input: String, isPartTwo: Bool, logger: Logger = Logger()) {
         self.input = input
         self.isPartTwo = isPartTwo
         self.logger = logger

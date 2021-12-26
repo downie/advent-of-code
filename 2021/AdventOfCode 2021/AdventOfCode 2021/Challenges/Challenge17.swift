@@ -26,9 +26,11 @@ class SeventeenState: ObservableObject {
     }
     @Published var output = ""
     
-    var solver: BallisticSolver?
+    var solver: Solver?
+    let solverType: Solver.Type
     
-    init() {
+    init(type: Solver.Type) {
+        solverType = type
         restartSolver()
     }
     
@@ -43,7 +45,7 @@ class SeventeenState: ObservableObject {
                 .trimmingCharacters(in: .whitespacesAndNewlines)
         }
 
-        solver = BallisticSolver(input: input, isPartTwo: isPartTwo)
+        solver = solverType.init(input: input, isPartTwo: isPartTwo)
     }
     
     @MainActor
@@ -62,7 +64,7 @@ class SeventeenState: ObservableObject {
 }
 
 struct Challenge17: View {
-    @StateObject var state = SeventeenState()
+    @StateObject var state = SeventeenState(type: BallisticSolver.self)
     
     let pasteboard = NSPasteboard.general
     
