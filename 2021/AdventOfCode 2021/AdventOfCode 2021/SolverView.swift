@@ -26,6 +26,7 @@ struct SolverView: View {
                     state.solve()
                 }.disabled(state.isSolving)
             }
+            Spacer()
             if state.isSolving {
                 ProgressView()
                     .progressViewStyle(.circular)
@@ -33,7 +34,6 @@ struct SolverView: View {
                 Text(state.output)
                     .font(.system(.body, design: .monospaced))
             }
-            Spacer()
             Button {
                 pasteboard.prepareForNewContents()
                 _ = pasteboard.setString(state.output, forType: .string)

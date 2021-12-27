@@ -60,7 +60,17 @@ struct ContentView: View {
         case 14: view = AnyView(Challenge14())
         case 15: view = AnyView(Challenge15())
         case 16: view = AnyView(Challenge16())
-        case 17: view = AnyView(Challenge17())
+        case 17: view = AnyView(SolverView(solverType: BallisticSolver.self, getInput: { isDemoInput in
+            let input: String
+            if isDemoInput {
+                input = "target area: x=20..30, y=-10..-5"
+            } else {
+                let inputData = NSDataAsset(name: "17")!.data
+                input = String(data: inputData, encoding: .utf8)!
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            return input
+        }))
         case 18: view = AnyView(Challenge18())
         case 19: view = AnyView(Challenge19())
         case 20: view = AnyView(Challenge20())
