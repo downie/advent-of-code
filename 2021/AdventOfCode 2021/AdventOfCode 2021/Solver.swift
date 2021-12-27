@@ -13,8 +13,8 @@ private let solverQueue = OperationQueue()
 public class Solver {
     private let backgroundQueue = solverQueue
     private let logger: Logger
-    private let isPartTwo: Bool
     private var task: Task<String, Error>?
+    let isPartTwo: Bool
     let input: String
     
     required public init(input: String, isPartTwo: Bool, logger: Logger = Logger()) {

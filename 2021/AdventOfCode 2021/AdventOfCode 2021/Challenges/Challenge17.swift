@@ -25,20 +25,32 @@ class BallisticSolver: Solver {
             possibleY.map { Point(x: x, y: $0) }
         }
         
-        let trajectories = velocities.map { velocity  -> (Point, [Point], Int)in
+        let trajectories = velocities.map { velocity  -> (Point, [Point], Int) in
             let trajectory = Self.trajectory(from: .zero, initialVelocity: velocity, before: bottomRight)
             let highestPoint = trajectory.map { $0.y }.reduce(Int.min, max)
             return (velocity, trajectory, highestPoint)
         }
         
-        let highestPoint = trajectories.reduce(trajectories.first!) { bestSoFar, next in
-            if bestSoFar.2 > next.2 {
-                return bestSoFar
+        let onesThatHitTheTarget = trajectories.filter { triplet -> Bool in
+            let (_, trajectory, _) = triplet
+            let hit = trajectory.first { point in
+                Self.isPoint(point, between: topLeft, and: bottomRight)
             }
-            return next
+            return hit != nil
         }
-        
-        return "\(highestPoint.2)"
+       
+        if isPartTwo {
+            return "\(onesThatHitTheTarget.count)"
+        } else {
+            let highestPoint = onesThatHitTheTarget.reduce(onesThatHitTheTarget.first!) { bestSoFar, next in
+                if bestSoFar.2 > next.2 {
+                    return bestSoFar
+                }
+                return next
+            }
+            
+            return "\(highestPoint.2)"
+        }
     }
     
     static func isPoint(_ point: Point, between topLeft: Point, and bottomRight: Point) -> Bool {
@@ -87,9 +99,12 @@ class BallisticSolver: Solver {
             (endY...0).flatMap { startingSpeed -> [Int] in
                 var reverseSpeed = abs(startingSpeed)
                 var position = endY
-                while position < 0 && reverseSpeed > 0 {
+                while position < 0 && reverseSpeed >= 0 {
                     position += reverseSpeed
                     reverseSpeed -= 1
+                }
+                if reverseSpeed != 0 {
+                    reverseSpeed += 1
                 }
                 if position == 0 {
                     return [reverseSpeed, -reverseSpeed]
