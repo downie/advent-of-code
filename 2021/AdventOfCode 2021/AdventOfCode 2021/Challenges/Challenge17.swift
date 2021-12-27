@@ -65,7 +65,7 @@ class BallisticSolver: Solver {
     
     static func validYVelocities(topLeft: Point, bottomRight: Point) -> [Int] {
         let speedToZero = (bottomRight.y...topLeft.y).flatMap { endY -> [Int] in
-            (endY...0).compactMap { startingSpeed -> Int? in
+            (endY...0).flatMap { startingSpeed -> [Int] in
                 var reverseSpeed = abs(startingSpeed)
                 var position = endY
                 while position < 0 && reverseSpeed > 0 {
@@ -73,12 +73,12 @@ class BallisticSolver: Solver {
                     reverseSpeed -= 1
                 }
                 if position == 0 {
-                    return reverseSpeed  // and -reverse speed?
+                    return [reverseSpeed, -reverseSpeed]
                 }
-                return nil
+                return []
             }
         }
-        return speedToZero
+        return Set(speedToZero).sorted()
     }
 }
 
