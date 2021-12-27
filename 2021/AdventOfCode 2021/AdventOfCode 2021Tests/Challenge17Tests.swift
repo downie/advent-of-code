@@ -52,8 +52,26 @@ class Challenge17Tests: XCTestCase {
     func testValidVerticalVelocitiesForDemoInput() throws {
         let topLeft = Point(x: 20, y: -5)
         let bottomRight = Point(x: 30, y: -10)
-        let expected = [0, 2, 3]
+        let expected = [0, 1, 2, 3]
         let result = BallisticSolver.validYVelocities(topLeft: topLeft, bottomRight: bottomRight)
+        print(result)
         XCTAssertEqual(Set(result).intersection(Set(expected)), Set(expected))
+    }
+    
+    func testSqueakySpeedsHitTheTarget() throws {
+//        [AdventOfCode_2021.Point(x: 7, y: 1), AdventOfCode_2021.Point(x: 6, y: 1), AdventOfCode_2021.Point(x: 9, y: -1), AdventOfCode_2021.Point(x: 8, y: -1), AdventOfCode_2021.Point(x: 7, y: -1), AdventOfCode_2021.Point(x: 11, y: -1), AdventOfCode_2021.Point(x: 10, y: -1), AdventOfCode_2021.Point(x: 8, y: 1)]
+        
+        let oneSuchSpeed = Point(x: 7, y: 1)
+        let topLeft = Point(x: 20, y: -5)
+        let bottomRight = Point(x: 30, y: -10)
+
+        let trajectory = BallisticSolver.trajectory(from: .zero, initialVelocity: oneSuchSpeed, before: bottomRight)
+        let isInArea = trajectory.reduce(false) { wasInArea, nextPoint in
+            guard !wasInArea else {
+                return wasInArea
+            }
+            return BallisticSolver.isPoint(nextPoint, between: topLeft, and: bottomRight)
+        }
+        XCTAssertTrue(isInArea)
     }
 }
