@@ -18,24 +18,36 @@ struct SolverView: View {
     
     var body: some View {
         VStack {
-            Toggle("Is Demo Input?", isOn: $state.isDemoInput)
-            Toggle("Is Part Two?", isOn: $state.isPartTwo)
-            Text(state.output)
-                .font(.system(.body, design: .monospaced))
-                .onAppear {
+            HStack {
+                Toggle("Is Demo Input?", isOn: $state.isDemoInput)
+                Toggle("Is Part Two?", isOn: $state.isPartTwo)
+                Spacer()
+                Button("Solve") {
                     state.solve()
-                }
+                }.disabled(state.isSolving)
+            }
+            if state.isSolving {
+                ProgressView()
+                    .progressViewStyle(.circular)
+            } else {
+                Text(state.output)
+                    .font(.system(.body, design: .monospaced))
+            }
+            Spacer()
             Button {
                 pasteboard.prepareForNewContents()
                 _ = pasteboard.setString(state.output, forType: .string)
             } label: {
                 Label("Copy", systemImage: "doc.on.doc")
             }
-            Button("Solve") {
-                state.solve()
-            }.disabled(state.isSolving)
+            .disabled(state.isSolving)
+            Spacer()
         }
+        .padding()
         .frame(minWidth: 200)
+        .onAppear {
+            state.solve()
+        }
     }
 }
 
