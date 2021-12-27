@@ -18,8 +18,27 @@ class BallisticSolver: Solver {
         let topLeft = Point(x: xParts.reduce(Int.max, min), y: yParts.reduce(Int.min, max))
         let bottomRight = Point(x: xParts.reduce(Int.min, max), y: yParts.reduce(Int.max, min))
 
+        let possibleX = Self.validXVelicities(topLeft: topLeft, bottomRight: bottomRight)
+        let possibleY = Self.validYVelocities(topLeft: topLeft, bottomRight: bottomRight)
         
-        return "\(topLeft), \(bottomRight)"
+        let velocities = possibleX.flatMap { x -> [Point] in
+            possibleY.map { Point(x: x, y: $0) }
+        }
+        
+        let trajectories = velocities.map { velocity  -> (Point, [Point], Int)in
+            let trajectory = Self.trajectory(from: .zero, initialVelocity: velocity, before: bottomRight)
+            let highestPoint = trajectory.map { $0.y }.reduce(Int.min, max)
+            return (velocity, trajectory, highestPoint)
+        }
+        
+        let highestPoint = trajectories.reduce(trajectories.first!) { bestSoFar, next in
+            if bestSoFar.2 > next.2 {
+                return bestSoFar
+            }
+            return next
+        }
+        
+        return "\(highestPoint.2)"
     }
     
     static func isPoint(_ point: Point, between topLeft: Point, and bottomRight: Point) -> Bool {
