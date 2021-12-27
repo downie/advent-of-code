@@ -15,6 +15,7 @@ public class Solver {
     private let logger: Logger
     private var task: Task<String, Error>?
     
+    /// Valid input that demonstrates how the Solver should work. Usually given in the challenge
     public class var demoInput: String { "" }
     
     let isPartTwo: Bool
