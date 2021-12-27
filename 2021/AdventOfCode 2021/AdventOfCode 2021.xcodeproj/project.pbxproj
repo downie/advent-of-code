@@ -40,6 +40,7 @@
 		83ACE62B276B7C3F008ADE49 /* PacketAnalyzerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */; };
 		83ACE62D276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */; };
 		83B47A43277A4D7B004C590E /* SolverState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B47A42277A4D7B004C590E /* SolverState.swift */; };
+		83B47A45277A4FC4004C590E /* SolverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B47A44277A4FC4004C590E /* SolverView.swift */; };
 		83F34124276B9658008DCF02 /* BitStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F34123276B9658008DCF02 /* BitStreamTests.swift */; };
 		83F34126276BBEFD008DCF02 /* Challenge16Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F34125276BBEFD008DCF02 /* Challenge16Tests.swift */; };
 		83F34128276E3C59008DCF02 /* SnailfishParsingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F34127276E3C59008DCF02 /* SnailfishParsingTests.swift */; };
@@ -103,6 +104,7 @@
 		83ACE62A276B7C3F008ADE49 /* PacketAnalyzerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketAnalyzerTests.swift; sourceTree = "<group>"; };
 		83ACE62C276B7D3F008ADE49 /* PacketDecodeAndAnalyzeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketDecodeAndAnalyzeTests.swift; sourceTree = "<group>"; };
 		83B47A42277A4D7B004C590E /* SolverState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolverState.swift; sourceTree = "<group>"; };
+		83B47A44277A4FC4004C590E /* SolverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolverView.swift; sourceTree = "<group>"; };
 		83F34123276B9658008DCF02 /* BitStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitStreamTests.swift; sourceTree = "<group>"; };
 		83F34125276BBEFD008DCF02 /* Challenge16Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Challenge16Tests.swift; sourceTree = "<group>"; };
 		83F34127276E3C59008DCF02 /* SnailfishParsingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnailfishParsingTests.swift; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				83FE761C2778C4DA0009836C /* Challenge.swift */,
 				83FE761E2778CC820009836C /* Solver.swift */,
 				83B47A42277A4D7B004C590E /* SolverState.swift */,
+				83B47A44277A4FC4004C590E /* SolverView.swift */,
 				8339153D275D079300FB6B1D /* Challenges */,
 				83391516275D070B00FB6B1D /* Assets.xcassets */,
 				8339151B275D070B00FB6B1D /* AdventOfCode_2021.entitlements */,
@@ -366,6 +369,7 @@
 				83FE761F2778CC820009836C /* Solver.swift in Sources */,
 				83ACE623276ACAD5008ADE49 /* Challenge23.swift in Sources */,
 				83195F6927639D030054CA69 /* Challenge10.swift in Sources */,
+				83B47A45277A4FC4004C590E /* SolverView.swift in Sources */,
 				83195F63275FA5CA0054CA69 /* Challenge07.swift in Sources */,
 				83ACE617276ACA9A008ADE49 /* Challenge17.swift in Sources */,
 				83195F6D27663F460054CA69 /* Challenge12.swift in Sources */,
