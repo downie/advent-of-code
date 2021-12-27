@@ -45,20 +45,40 @@ class BallisticSolver: Solver {
     }
     
     static func validXVelicities(topLeft: Point, bottomRight: Point) -> [Int] {
-        let velocities = (topLeft.x...bottomRight.x).compactMap { endX -> Int? in
-            var reverseSpeed = 0
-            var position = endX
-            while position > 0 {
-                reverseSpeed += 1
-                position -= reverseSpeed
+        let velocities = (topLeft.x...bottomRight.x).flatMap { endX -> [Int] in
+            (0...endX).compactMap { startingSpeed -> Int? in
+                var reverseSpeed = startingSpeed
+                var position = endX
+                while position > 0 {
+                    reverseSpeed += 1
+                    position -= reverseSpeed
+                }
+                if position == 0 {
+                    return reverseSpeed
+                } else {
+                    return nil
+                }
             }
-            if position == 0 {
-                return reverseSpeed
-            } else {
+        }
+        return Set(velocities).sorted()
+    }
+    
+    static func validYVelocities(topLeft: Point, bottomRight: Point) -> [Int] {
+        let speedToZero = (bottomRight.y...topLeft.y).flatMap { endY -> [Int] in
+            (endY...0).compactMap { startingSpeed -> Int? in
+                var reverseSpeed = abs(startingSpeed)
+                var position = endY
+                while position < 0 && reverseSpeed > 0 {
+                    position += reverseSpeed
+                    reverseSpeed -= 1
+                }
+                if position == 0 {
+                    return reverseSpeed  // and -reverse speed?
+                }
                 return nil
             }
         }
-        return velocities
+        return speedToZero
     }
 }
 

@@ -46,6 +46,14 @@ class Challenge17Tests: XCTestCase {
         let bottomRight = Point(x: 30, y: -10)
         let expected = [6, 7, 9]
         let result = BallisticSolver.validXVelicities(topLeft: topLeft, bottomRight: bottomRight)
-        XCTAssertEqual(result, expected)
+        XCTAssertTrue(Set(result).intersection(Set(expected)) == Set(expected))
+    }
+    
+    func testValidVerticalVelocitiesForDemoInput() throws {
+        let topLeft = Point(x: 20, y: -5)
+        let bottomRight = Point(x: 30, y: -10)
+        let expected = [0, 2, 3]
+        let result = BallisticSolver.validYVelocities(topLeft: topLeft, bottomRight: bottomRight)
+        XCTAssertEqual(Set(result).intersection(Set(expected)), Set(expected))
     }
 }
