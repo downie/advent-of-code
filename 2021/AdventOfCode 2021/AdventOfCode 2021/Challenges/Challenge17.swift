@@ -18,6 +18,7 @@ class BallisticSolver: Solver {
         let topLeft = Point(x: xParts.reduce(Int.max, min), y: yParts.reduce(Int.min, max))
         let bottomRight = Point(x: xParts.reduce(Int.min, max), y: yParts.reduce(Int.max, min))
 
+        
         return "\(topLeft), \(bottomRight)"
     }
     
@@ -41,6 +42,23 @@ class BallisticSolver: Solver {
         }
 
         return points
+    }
+    
+    static func validXVelicities(topLeft: Point, bottomRight: Point) -> [Int] {
+        let velocities = (topLeft.x...bottomRight.x).compactMap { endX -> Int? in
+            var reverseSpeed = 0
+            var position = endX
+            while position > 0 {
+                reverseSpeed += 1
+                position -= reverseSpeed
+            }
+            if position == 0 {
+                return reverseSpeed
+            } else {
+                return nil
+            }
+        }
+        return velocities
     }
 }
 

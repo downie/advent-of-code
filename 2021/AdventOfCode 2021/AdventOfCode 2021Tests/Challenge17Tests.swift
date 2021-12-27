@@ -38,4 +38,14 @@ class Challenge17Tests: XCTestCase {
         ]
         XCTAssertEqual(result, expected)
     }
+    
+    // MARK: - Velocity Tests
+    
+    func testValidHorizontalVelocitiesForDemoInput() throws {
+        let topLeft = Point(x: 20, y: -5)
+        let bottomRight = Point(x: 30, y: -10)
+        let expected = [6, 7, 9]
+        let result = BallisticSolver.validXVelicities(topLeft: topLeft, bottomRight: bottomRight)
+        XCTAssertEqual(result, expected)
+    }
 }
