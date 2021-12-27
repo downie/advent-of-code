@@ -8,6 +8,8 @@
 import SwiftUI
 
 class BallisticSolver: Solver {
+    override class var demoInput: String { "target area: x=20..30, y=-10..-5" }
+    
     override func solveOrThrow() throws -> String {
         let input = self.input.dropFirst("target area: ".count)
         let parts = input.components(separatedBy: ", ")

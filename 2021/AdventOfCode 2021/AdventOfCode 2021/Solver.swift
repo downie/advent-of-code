@@ -14,6 +14,9 @@ public class Solver {
     private let backgroundQueue = solverQueue
     private let logger: Logger
     private var task: Task<String, Error>?
+    
+    public class var demoInput: String { "" }
+    
     let isPartTwo: Bool
     let input: String
     

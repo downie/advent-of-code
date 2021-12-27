@@ -63,7 +63,7 @@ struct ContentView: View {
         case 17: view = AnyView(SolverView(solverType: BallisticSolver.self, getInput: { isDemoInput in
             let input: String
             if isDemoInput {
-                input = "target area: x=20..30, y=-10..-5"
+                input = BallisticSolver.demoInput
             } else {
                 let inputData = NSDataAsset(name: "17")!.data
                 input = String(data: inputData, encoding: .utf8)!
