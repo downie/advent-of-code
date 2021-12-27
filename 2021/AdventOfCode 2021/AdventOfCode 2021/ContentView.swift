@@ -71,7 +71,17 @@ struct ContentView: View {
             }
             return input
         }))
-        case 18: view = AnyView(Challenge18())
+        case 18: view = AnyView(SolverView(solverType: SnailfishSolver.self, getInput: { isDemoInput in
+            let input: String
+            if isDemoInput {
+                input = SnailfishSolver.demoInput
+            } else {
+                let inputData = NSDataAsset(name: "18")!.data
+                input = String(data: inputData, encoding: .utf8)!
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            return input
+        }))
         case 19: view = AnyView(Challenge19())
         case 20: view = AnyView(Challenge20())
         case 21: view = AnyView(Challenge21())
