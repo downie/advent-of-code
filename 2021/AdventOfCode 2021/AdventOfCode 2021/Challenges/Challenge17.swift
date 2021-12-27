@@ -148,7 +148,7 @@ class BallisticSolver: Solver {
     }
 }
 
-class SolverState: ObservableObject {
+class Challenge17SolverState: ObservableObject {
     @Published var isDemoInput = true {
         didSet {
             resetSolver()
@@ -203,7 +203,7 @@ class SolverState: ObservableObject {
 }
 
 struct Challenge17: View {
-    @StateObject var state = SolverState(type: BallisticSolver.self)
+    @StateObject var state = Challenge17SolverState(type: BallisticSolver.self)
     
     let pasteboard = NSPasteboard.general
     
