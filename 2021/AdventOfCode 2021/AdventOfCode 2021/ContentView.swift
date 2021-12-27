@@ -46,6 +46,10 @@ struct ContentView: View {
     }
     
     func challengeView(for number: Int) -> AnyView {
+        let solvers = [
+            BallisticSolver.self, // Challenge 17
+            SnailfishSolver.self
+        ]
         let view: AnyView
         switch number {
         case 05: view = AnyView(Challenge05())
@@ -60,35 +64,19 @@ struct ContentView: View {
         case 14: view = AnyView(Challenge14())
         case 15: view = AnyView(Challenge15())
         case 16: view = AnyView(Challenge16())
-        case 17: view = AnyView(SolverView(solverType: BallisticSolver.self, getInput: { isDemoInput in
-            let input: String
-            if isDemoInput {
-                input = BallisticSolver.demoInput
-            } else {
-                let inputData = NSDataAsset(name: "17")!.data
-                input = String(data: inputData, encoding: .utf8)!
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
+        case 17...18:
+            let type = solvers[number - 17]
+            let solver = SolverView(solverType: type) { isDemo in
+                guard !isDemo else {
+                    return type.demoInput
+                }
+                guard let data = NSDataAsset(name: "\(number)")?.data,
+                      let input = String(data: data, encoding: .utf8) else {
+                          return ""
+                }
+                return input.trimmingCharacters(in: .whitespacesAndNewlines)
             }
-            return input
-        }))
-        case 18: view = AnyView(SolverView(solverType: SnailfishSolver.self, getInput: { isDemoInput in
-            let input: String
-            if isDemoInput {
-                input = SnailfishSolver.demoInput
-            } else {
-                let inputData = NSDataAsset(name: "18")!.data
-                input = String(data: inputData, encoding: .utf8)!
-                    .trimmingCharacters(in: .whitespacesAndNewlines)
-            }
-            return input
-        }))
-        case 19: view = AnyView(Challenge19())
-        case 20: view = AnyView(Challenge20())
-        case 21: view = AnyView(Challenge21())
-        case 22: view = AnyView(Challenge22())
-        case 23: view = AnyView(Challenge23())
-        case 24: view = AnyView(Challenge24())
-        case 25: view = AnyView(Challenge25())
+            view = AnyView(solver)
         default: view = AnyView(EmptyView())
         }
         return view
